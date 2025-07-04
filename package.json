@@ -1,0 +1,47 @@
+{
+  "name": "samba-webui",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "prepare": "next-ws patch"
+  },
+  "dependencies": {
+    "@mantine/charts": "^8.1.2",
+    "@mantine/core": "^8.1.2",
+    "@mantine/form": "^8.1.2",
+    "@mantine/hooks": "^8.1.2",
+    "@mantine/modals": "^8.1.2",
+    "@mantine/notifications": "^8.1.2",
+    "@t3-oss/env-nextjs": "^0.13.8",
+    "@tabler/icons-react": "^3.34.0",
+    "dockerode": "^4.0.7",
+    "mantine-form-zod-resolver": "^1.3.0",
+    "next": "15.3.4",
+    "next-ws": "^2.0.9",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "recharts": "2",
+    "ws": "^8.18.3",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
+    "@types/dockerode": "^3.3.42",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/ws": "^8.18.1",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.4",
+    "postcss": "^8.5.6",
+    "postcss-preset-mantine": "^1.18.0",
+    "postcss-simple-vars": "^7.0.1",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
