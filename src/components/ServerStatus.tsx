@@ -5,6 +5,7 @@ import { Badge, Card, Divider, Group, LoadingOverlay, Stack, Text } from "@manti
 import { GetServerStatusResponse } from "@/interfaces";
 import { useWebSocket } from "@/hooks";
 import { LineChart } from '@mantine/charts';
+import { env } from "@/env";
 
 const {Section: CardSection} = Card
 
@@ -20,7 +21,7 @@ export const ServerStatus: FC = () => {
         }
     }, [statusArr])
 
-    const socket = useWebSocket(() => `ws://localhost:3000/api/server/status/ws`)
+    const socket = useWebSocket(() => env.NEXT_PUBLIC_PANEL_URL.replace('http', 'ws') + '/api/server/status/ws')
 
 
     const containerState = useMemo(() => {

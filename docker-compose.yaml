@@ -1,0 +1,13 @@
+name: samba-control-panel
+services:
+  app:
+    build: .
+    container_name: samba-panel
+    ports:
+      - 80:3000
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/lanakod/Docker/transmission/smb.conf:/etc/samba/smb.conf
+      - /home/lanakod/Docker/transmission/smbpasswd:/etc/samba/smbpasswd

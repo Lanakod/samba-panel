@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import { ContainerStatus } from "@/interfaces";
 import { dockerClient, parseDockerStats } from "@/utils";
+import { WebSocket } from "ws";
 // import { IncomingMessage } from "http";
 // import { WebSocketServer, WebSocket } from "ws";
 
