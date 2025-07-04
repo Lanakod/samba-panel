@@ -12,6 +12,11 @@ env:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      SMB_CONF_PATH: ${{ secrets.SMB_CONF_PATH }}
+      SMBPASSWD_PATH: ${{ secrets.SMBPASSWD_PATH }}
+      NEXT_PUBLIC_PANEL_URL: ${{ secrets.NEXT_PUBLIC_PANEL_URL }}
+      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
 
     steps:
       - uses: actions/checkout@v2
@@ -31,6 +36,12 @@ jobs:
     needs: test
 
     runs-on: ubuntu-latest
+    env:
+      SMB_CONF_PATH: ${{ secrets.SMB_CONF_PATH }}
+      SMBPASSWD_PATH: ${{ secrets.SMBPASSWD_PATH }}
+      NEXT_PUBLIC_PANEL_URL: ${{ secrets.NEXT_PUBLIC_PANEL_URL }}
+      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+
     if: github.event_name == 'push'
 
     steps:
