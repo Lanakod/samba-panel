@@ -39,6 +39,9 @@ jobs:
     needs: test
 
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     env:
       SMB_CONF_PATH: ${{ secrets.SMB_CONF_PATH }}
       SMBPASSWD_PATH: ${{ secrets.SMBPASSWD_PATH }}
