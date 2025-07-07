@@ -35,7 +35,13 @@ COPY --from=build /usr/src/app/next.config.ts ./next.config.ts
 COPY --from=build /usr/src/app/package.json ./package.json
 COPY --from=build /usr/src/app/node_modules ./node_modules
 
+# Add entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+
 EXPOSE 3000
 USER node
 
-CMD ["yarn", "start"]
+ENTRYPOINT ["/entrypoint.sh"]
+

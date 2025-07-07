@@ -1,4 +1,7 @@
+'use client'
+
 import type { Metadata } from "next";
+import Script from 'next/script';
 import "./globals.css";
 import { ColorSchemeScript, Container, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { ModalsProvider } from "@mantine/modals";
@@ -17,6 +20,7 @@ export default function RootLayout({
     <html lang="en" {...mantineHtmlProps}>
       <head>
         <ColorSchemeScript />
+        <Script src="/env.js" strategy="beforeInteractive" />
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">

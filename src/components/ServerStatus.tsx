@@ -21,6 +21,13 @@ export const ServerStatus: FC = () => {
         }
     }, [statusArr])
 
+    const panelUrl = useMemo(() => {
+        if (typeof window !== 'undefined' && window.__ENV__) {
+            return window.__ENV__.NEXT_PUBLIC_PANEL_URL;
+        }
+        return 'http://localhost:3000'; // fallback
+    }, []);
+
     const socket = useWebSocket(() => env.NEXT_PUBLIC_PANEL_URL.replace('http', 'ws') + '/api/server/status/ws')
 
 
