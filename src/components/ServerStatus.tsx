@@ -5,7 +5,6 @@ import { Badge, Card, Divider, Group, LoadingOverlay, Stack, Text } from "@manti
 import { GetServerStatusResponse } from "@/interfaces";
 import { useWebSocket } from "@/hooks";
 import { LineChart } from '@mantine/charts';
-import { env } from "@/env";
 
 const {Section: CardSection} = Card
 
