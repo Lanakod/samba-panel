@@ -76,13 +76,14 @@ jobs:
       - name: Extract tags/versions
         id: meta
         run: |
-          REF=${GITHUB_REF##*/}
-          TAGS="latest,latest-arm"
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            VERSION=${REF#v}
-            TAGS="${VERSION},${VERSION}-arm"
+          IMAGE_TAGS="latest,latest-arm"
+
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+            IMAGE_TAGS="${VERSION},${VERSION}-arm"
           fi
-          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+          echo "TAGS=$IMAGE_TAGS" >> $GITHUB_ENV
 
       - name: Cache Docker layers
         uses: actions/cache@v3
@@ -99,8 +100,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.GHCR_REPO }}:latest
-            ${{ env.DOCKERHUB_REPO }}:latest
+            ${{ env.GHCR_REPO }}:${{ env.TAGS }}
+            ${{ env.DOCKERHUB_REPO }}:${{ env.TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -142,13 +143,14 @@ jobs:
       - name: Extract tags/versions
         id: meta
         run: |
-          REF=${GITHUB_REF##*/}
-          TAGS="latest,latest-arm"
-          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
-            VERSION=${REF#v}
-            TAGS="${VERSION},${VERSION}-arm"
+          IMAGE_TAGS="latest,latest-arm"
+
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/v}"
+            IMAGE_TAGS="${VERSION},${VERSION}-arm"
           fi
-          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
+
+          echo "TAGS=$IMAGE_TAGS" >> $GITHUB_ENV
 
       - name: Cache Docker layers
         uses: actions/cache@v3
@@ -157,7 +159,7 @@ jobs:
           key: ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: ${{ runner.os }}-buildx-
 
-      - name: Build and push AMD64 image
+      - name: Build and push ARM64 image
         uses: docker/build-push-action@v5
         with:
           context: .
@@ -165,8 +167,8 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ env.GHCR_REPO }}:latest-arm
-            ${{ env.DOCKERHUB_REPO }}:latest-arm
+            ${{ env.GHCR_REPO }}:${{ env.TAGS }}
+            ${{ env.DOCKERHUB_REPO }}:${{ env.TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
