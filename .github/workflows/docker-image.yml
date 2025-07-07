@@ -9,79 +9,50 @@ on:
 
 env:
   IMAGE_NAME: samba-panel
+  REGISTRY: ghcr.io
+  IMAGE_REPO: ghcr.io/lanakod/samba-panel
 
 jobs:
-  test:
+  build-and-push:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
-    env:
-      SMB_CONF_PATH: ${{ secrets.SMB_CONF_PATH }}
-      SMBPASSWD_PATH: ${{ secrets.SMBPASSWD_PATH }}
-      NEXT_PUBLIC_PANEL_URL: ${{ secrets.NEXT_PUBLIC_PANEL_URL }}
-      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout source code
+        uses: actions/checkout@v3
 
-      - name: Run tests
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Determine Docker tags
+        id: meta
         run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi  
-  # Push image to GitHub Packages.
-  # See also https://docs.docker.com/docker-hub/builds/
-  push:
-    # Ensure test job passes before pushing image.
-    needs: test
+          REF=${GITHUB_REF#refs/*/}
+          TAGS=""
+          if [[ "$REF" == "master" ]]; then
+            TAGS="latest"
+          elif [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VERSION=${REF#v}
+            TAGS="$VERSION"
+          fi
 
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    env:
-      SMB_CONF_PATH: ${{ secrets.SMB_CONF_PATH }}
-      SMBPASSWD_PATH: ${{ secrets.SMBPASSWD_PATH }}
-      NEXT_PUBLIC_PANEL_URL: ${{ secrets.NEXT_PUBLIC_PANEL_URL }}
-      CONTAINER_NAME: ${{ secrets.CONTAINER_NAME }}
+          echo "TAGS=$TAGS" >> $GITHUB_ENV
 
-    if: github.event_name == 'push'
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Build image
-        run: |
-          docker build . \
-            --file Dockerfile \
-            --tag $IMAGE_NAME \
-            --label "org.opencontainers.image.source=https://github.com/${{ github.repository }}"
-
-      - name: Log into GitHub Container Registry
-        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-
-      - name: Push image
-        run: |
-          IMAGE_ID=ghcr.io/lanakod/$IMAGE_NAME
-
-          # Change all uppercase to lowercase
-          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-
-          # Strip git ref prefix from version
-          VERSION=$(echo "${{ github.ref }}" | sed -e 's,.*/\(.*\),\1,')
-
-          # Strip "v" prefix from tag name
-          [[ "${{ github.ref }}" == "refs/tags/"* ]] && VERSION=$(echo $VERSION | sed -e 's/^v//')
-
-          # Use Docker `latest` tag convention
-          [ "$VERSION" == "master" ] && VERSION=latest
-
-          echo IMAGE_ID=$IMAGE_ID
-          echo VERSION=$VERSION
-
-          docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
-          docker push $IMAGE_ID:$VERSION      
+      - name: Build and push multi-arch image (amd64 + arm64)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          platforms: linux/amd64,linux/arm64
+          tags: |
+            ${{ env.IMAGE_REPO }}:${{ env.TAGS }}
