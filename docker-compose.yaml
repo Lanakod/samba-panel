@@ -1,13 +1,32 @@
-name: samba-control-panel
+name: samba
 services:
-  app:
-    build: .
-    container_name: samba-panel
+  samba:
+    container_name: samba
+    image: dperson/samba
+    read_only: false
     ports:
-      - 80:3000
-    env_file: .env
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    tmpfs:
+      - /run
+      - /tmp
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./smb.conf:/etc/samba/smb.conf
+      - ./smbpasswd:/etc/samba/smbpasswd
+    command: '-p -i /etc/samba/smbpasswd'
+  panel:
+    container_name: panel
+    image: ghcr.io/lanakod/samba-panel:latest
+    env_file: .env.panel
+    ports:
+      - "80:3000"
     restart: unless-stopped
     volumes:
+      - ./smb.conf:/etc/samba/smb.conf
+      - ./smbpasswd:/etc/samba/smbpasswd
       - /var/run/docker.sock:/var/run/docker.sock
-      - /home/lanakod/Docker/transmission/smb.conf:/etc/samba/smb.conf
-      - /home/lanakod/Docker/transmission/smbpasswd:/etc/samba/smbpasswd
