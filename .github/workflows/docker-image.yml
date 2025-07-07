@@ -3,44 +3,47 @@ name: Docker Image CI
 on:
   push:
     branches: [ master ]
-    tags: [ v* ]
+    tags:     [ v* ]
 
 env:
   IMAGE_NAME: samba-panel
   GHCR_REPO: ghcr.io/lanakod/samba-panel
-  DOCKERHUB_REPO: lanakod/samba-panel
+  DOCKERHUB_REPO: lanakod/samba-panel         # <— change if your repo name differs
 
 jobs:
+  # ────────────────────────────────────────────────
   test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
+            docker-compose -f docker-compose.test.yml build
+            docker-compose -f docker-compose.test.yml run sut
           else
-            docker build . --file Dockerfile
+            docker build . -f Dockerfile
           fi
 
+  # ────────────────────────────────────────────────
   docker:
     needs: test
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-    environment: Docker Build
+      packages: write        # ghcr push
+
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # ─── Logins ─────────────────────────────────
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -51,38 +54,44 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Extract metadata (tags, versions)
-        id: meta
+      # ─── Decide tags (latest / version) ─────────
+      - name: Derive image tags
+        id: tags
         run: |
           REF=${GITHUB_REF##*/}
-          if [[ "${GITHUB_REF}" == refs/heads/master ]]; then
-            echo "TAGS=latest,latest-arm" >> $GITHUB_OUTPUT
-          elif [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+          if [[ "${GITHUB_REF}" == "refs/heads/master" ]]; then
+            echo "TAG_AMD=latest"      >> $GITHUB_ENV
+            echo "TAG_ARM=latest-arm"  >> $GITHUB_ENV
+          else
             VERSION=${REF#v}
-            echo "TAGS=${VERSION},${VERSION}-arm" >> $GITHUB_OUTPUT
+            echo "TAG_AMD=${VERSION}"      >> $GITHUB_ENV
+            echo "TAG_ARM=${VERSION}-arm"  >> $GITHUB_ENV
           fi
 
+      # ─── Optional build‑cache (faster CI) ───────
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          key:  ${{ runner.os }}-buildx-${{ github.sha }}
           restore-keys: |
             ${{ runner.os }}-buildx-
 
-      - name: Build and push multi-arch images
+      # ─── Build + Push multi‑arch image ──────────
+      - name: Build and push image (GHCR & Docker Hub)
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          push: true
           platforms: linux/amd64,linux/arm64
+          push: true
           tags: |
-            ${{ env.GHCR_REPO }}:${{ steps.meta.outputs.TAGS }}
-            ${{ env.DOCKERHUB_REPO }}:${{ steps.meta.outputs.TAGS }}
+            ${{ env.GHCR_REPO }}:${{ env.TAG_AMD }}
+            ${{ env.GHCR_REPO }}:${{ env.TAG_ARM }}
+            ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_AMD }}
+            ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_ARM }}
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to: type=local,dest=/tmp/.buildx-cache
+          cache-to:   type=local,dest=/tmp/.buildx-cache
