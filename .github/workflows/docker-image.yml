@@ -19,7 +19,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="🚀 Build started for *${{ github.repository }}* on *${{ github.ref_name }}*" \
+            -d text="🚀 *Build started* for [${{ github.repository }}@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) on branch \`${{ github.ref_name }}\`" \
             -d parse_mode=Markdown
 
   test:
@@ -43,7 +43,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="✅ Tests passed for *${{ github.repository }}*" \
+            -d text="✅ *Tests passed* for [${{ github.repository }}@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" \
             -d parse_mode=Markdown
 
   docker:
@@ -112,7 +112,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="📦 Docker images successfully built and pushed for *${{ github.repository }}*" \
+            -d text="📦 *Docker images pushed* for [${{ github.repository }}@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" \
             -d parse_mode=Markdown
 
   notify-failure:
@@ -125,5 +125,5 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="❌ Build or push failed for *${{ github.repository }}* on *${{ github.ref_name }}*" \
+            -d text="❌ *Build failed* for [${{ github.repository }}@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) on \`${{ github.ref_name }}\`" \
             -d parse_mode=Markdown
