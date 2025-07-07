@@ -50,6 +50,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     environment: Docker Build
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v2
 
@@ -113,6 +116,9 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
     environment: Docker Build
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v2
 
