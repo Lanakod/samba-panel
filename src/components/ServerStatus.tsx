@@ -27,7 +27,7 @@ export const ServerStatus: FC = () => {
         return 'http://localhost:3000'; // fallback
     }, []);
 
-    const socket = useWebSocket(() => panelUrl)
+    const socket = useWebSocket(() => panelUrl + '/api/server/status/ws')
 
 
     const containerState = useMemo(() => {
