@@ -3,40 +3,56 @@ name: Docker Image CI
 on:
   push:
     branches: [ master ]
-    tags:     [ v* ]
+    tags: [ v* ]
 
 env:
   IMAGE_NAME: samba-panel
   GHCR_REPO: ghcr.io/lanakod/samba-panel
-  DOCKERHUB_REPO: lanakod/samba-panel         # <— change if your repo name differs
+  DOCKERHUB_REPO: lanakod/samba-panel
 
 jobs:
-  # ────────────────────────────────────────────────
-  test:
+  notify-start:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
+    environment: Docker Build
+    steps:
+      - name: Notify Telegram - Build started
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="🚀 Build started for *${{ github.repository }}* on *${{ github.ref_name }}*" \
+            -d parse_mode=Markdown
+
+  test:
+    needs: notify-start
+    runs-on: ubuntu-latest
+    environment: Docker Build
     steps:
       - uses: actions/checkout@v3
 
       - name: Run tests
         run: |
           if [ -f docker-compose.test.yml ]; then
-            docker-compose -f docker-compose.test.yml build
-            docker-compose -f docker-compose.test.yml run sut
+            docker-compose --file docker-compose.test.yml build
+            docker-compose --file docker-compose.test.yml run sut
           else
-            docker build . -f Dockerfile
+            docker build . --file Dockerfile
           fi
 
-  # ────────────────────────────────────────────────
+      - name: Notify Telegram - Test passed
+        if: success()
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="✅ Tests passed for *${{ github.repository }}*" \
+            -d parse_mode=Markdown
+
   docker:
     needs: test
     runs-on: ubuntu-latest
     environment: Docker Build
     permissions:
       contents: read
-      packages: write        # ghcr push
+      packages: write
 
     steps:
       - uses: actions/checkout@v3
@@ -44,7 +60,6 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      # ─── Logins ─────────────────────────────────
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v3
         with:
@@ -55,44 +70,60 @@ jobs:
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
+          registry: docker.io
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # ─── Decide tags (latest / version) ─────────
-      - name: Derive image tags
-        id: tags
+      - name: Extract tags/versions
+        id: meta
         run: |
           REF=${GITHUB_REF##*/}
-          if [[ "${GITHUB_REF}" == "refs/heads/master" ]]; then
-            echo "TAG_AMD=latest"      >> $GITHUB_ENV
-            echo "TAG_ARM=latest-arm"  >> $GITHUB_ENV
-          else
+          TAGS="latest,latest-arm"
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             VERSION=${REF#v}
-            echo "TAG_AMD=${VERSION}"      >> $GITHUB_ENV
-            echo "TAG_ARM=${VERSION}-arm"  >> $GITHUB_ENV
+            TAGS="${VERSION},${VERSION}-arm"
           fi
+          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
 
-      # ─── Optional build‑cache (faster CI) ───────
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache
-          key:  ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: ${{ runner.os }}-buildx-
 
-      # ─── Build + Push multi‑arch image ──────────
-      - name: Build and push image (GHCR & Docker Hub)
+      - name: Build and Push Docker Images
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
           push: true
+          platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.GHCR_REPO }}:${{ env.TAG_AMD }}
-            ${{ env.GHCR_REPO }}:${{ env.TAG_ARM }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_AMD }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.TAG_ARM }}
+            ${{ env.GHCR_REPO }}:latest
+            ${{ env.GHCR_REPO }}:latest-arm
+            ${{ env.DOCKERHUB_REPO }}:latest
+            ${{ env.DOCKERHUB_REPO }}:latest-arm
           cache-from: type=local,src=/tmp/.buildx-cache
-          cache-to:   type=local,dest=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Notify Telegram - Docker Push Success
+        if: success()
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="📦 Docker images successfully built and pushed for *${{ github.repository }}*" \
+            -d parse_mode=Markdown
+
+  notify-failure:
+    if: failure()
+    runs-on: ubuntu-latest
+    environment: Docker Build
+    needs: [test, docker]
+    steps:
+      - name: Notify Telegram - Build Failed
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
+            -d text="❌ Build or push failed for *${{ github.repository }}* on *${{ github.ref_name }}*" \
+            -d parse_mode=Markdown
