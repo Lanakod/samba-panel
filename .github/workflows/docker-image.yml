@@ -100,8 +100,8 @@ jobs:
           push: true
           platforms: linux/amd64
           tags: |
-            ${{ env.GHCR_REPO }}:${{ env.IMAGE_TAGS }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.IMAGE_TAGS }}
+            ${{ env.GHCR_REPO }}:${{ env.TAGS }}
+            ${{ env.DOCKERHUB_REPO }}:${{ env.TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -167,8 +167,8 @@ jobs:
           push: true
           platforms: linux/arm64
           tags: |
-            ${{ env.GHCR_REPO }}:${{ env.IMAGE_TAGS }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.IMAGE_TAGS }}
+            ${{ env.GHCR_REPO }}:${{ env.TAGS }}
+            ${{ env.DOCKERHUB_REPO }}:${{ env.TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
