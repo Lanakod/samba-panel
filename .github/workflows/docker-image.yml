@@ -33,6 +33,7 @@ jobs:
   docker:
     needs: test
     runs-on: ubuntu-latest
+    environment: Docker Build
     permissions:
       contents: read
       packages: write        # ghcr push
