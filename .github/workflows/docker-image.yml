@@ -112,7 +112,7 @@ jobs:
     if: failure()
     runs-on: ubuntu-latest
     environment: Docker Build
-    needs: [test, docker]
+    needs: [test, docker-amd64, docker-arm64]
     steps:
       - name: Notify Telegram - Build Failed
         run: |
