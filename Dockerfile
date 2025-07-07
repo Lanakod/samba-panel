@@ -2,16 +2,20 @@
 FROM node:22-alpine AS base
 WORKDIR /usr/src/app
 
-# Stage 2: Install dependencies (with devDependencies)
+# Stage 2: Install all dependencies (with timeout fix)
 FROM base AS install
 RUN mkdir -p /temp/dev
 COPY package.json yarn.lock tsconfig.json /temp/dev/
-RUN cd /temp/dev && yarn install --frozen-lockfile
+RUN cd /temp/dev \
+  && yarn config set network-timeout 600000 -g \
+  && yarn install --frozen-lockfile
 
 # Stage 3: Install only production dependencies
 RUN mkdir -p /temp/prod
 COPY package.json yarn.lock /temp/prod/
-RUN cd /temp/prod && yarn install --frozen-lockfile --production
+RUN cd /temp/prod \
+  && yarn config set network-timeout 600000 -g \
+  && yarn install --frozen-lockfile --production
 
 # Stage 4: Build the Next.js app
 FROM base AS build
@@ -25,7 +29,6 @@ RUN yarn build
 FROM base AS release
 WORKDIR /usr/src/app
 
-# Copy production dependencies and built files
 COPY --from=build /usr/src/app/.next .next
 COPY --from=build /usr/src/app/public ./public
 COPY --from=build /usr/src/app/next.config.ts ./next.config.ts
@@ -35,5 +38,4 @@ COPY --from=build /usr/src/app/node_modules ./node_modules
 EXPOSE 3000
 USER node
 
-# Start Next.js server
 CMD ["yarn", "start"]
