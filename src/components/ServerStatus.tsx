@@ -23,12 +23,12 @@ export const ServerStatus: FC = () => {
 
     const panelUrl = useMemo(() => {
         if (typeof window !== 'undefined' && window.__ENV__) {
-            return window.__ENV__.NEXT_PUBLIC_PANEL_URL;
+            return window.__ENV__.NEXT_PUBLIC_PANEL_URL as string;
         }
         return 'http://localhost:3000'; // fallback
     }, []);
 
-    const socket = useWebSocket(() => env.NEXT_PUBLIC_PANEL_URL.replace('http', 'ws') + '/api/server/status/ws')
+    const socket = useWebSocket(() => panelUrl)
 
 
     const containerState = useMemo(() => {
