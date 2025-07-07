@@ -2,9 +2,10 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
+    branches:
+      - master
+    tags:
+      - v*
 
 env:
   IMAGE_NAME: samba-panel
