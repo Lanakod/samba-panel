@@ -21,7 +21,7 @@ services:
     command: '-p -i /etc/samba/smbpasswd'
   panel:
     container_name: panel
-    image: ghcr.io/lanakod/samba-panel:latest
+    image: lanakod/samba-panel:latest
     env_file: .env
     user: root
     ports:

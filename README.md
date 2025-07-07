@@ -1,22 +1,29 @@
-# Samba Panel
+# Samba Panel 🧰
 
-[![Docker Image](https://img.shields.io/badge/docker-ghcr.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square)](https://github.com/Lanakod/samba-panel/pkgs/container/samba-panel)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker-publish.yml?branch=main&label=build&style=flat-square)](https://github.com/Lanakod/samba-panel/actions)
+[![Docker Image](https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square)](https://hub.docker.com/r/lanakod/samba-panel)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square)](https://github.com/Lanakod/samba-panel/actions)
 [![License](https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square)](https://github.com/Lanakod/samba-panel/releases)
+![Docker Pulls](https://img.shields.io/docker/pulls/lanakod/samba-panel)
 
-🧰 **Samba Panel** is a web-based interface for managing [Samba](https://www.samba.org/) shares and users using the `dperson/samba` container. It allows you to create, update, and delete users and shares directly from a browser.
+**Samba Panel** is a web-based interface for managing Samba users and file shares via Docker.
 
-## 🐳 Docker Compose Setup
+## 🚀 Quick Start (Docker Run)
 
-To get started, use the following `docker-compose.yaml`:
+You can run the panel directly without Docker Compose:
+
+```bash
+docker run -d   --name samba-panel   -p 80:3000   -v "$PWD/smb.conf:/etc/samba/smb.conf"   -v "$PWD/smbpasswd:/etc/samba/smbpasswd"   -v /var/run/docker.sock:/var/run/docker.sock   -e SMB_CONF_PATH=/etc/samba/smb.conf   -e SMBPASSWD_PATH=/etc/samba/smbpasswd   -e NEXT_PUBLIC_PANEL_URL=http://localhost   -e CONTAINER_NAME=samba   lanakod/samba-panel:latest
+```
+
+## 🐳 Docker Compose Setup (recommended)
 
 ```yaml
-name: samba
+version: "3.8"
 services:
   samba:
     container_name: samba
     image: dperson/samba
-    read_only: false
     ports:
       - "137:137/udp"
       - "138:138/udp"
@@ -35,21 +42,18 @@ services:
 
   panel:
     container_name: panel
-    image: ghcr.io/lanakod/samba-panel:latest
-    env_file: .env.panel
-    user: root
+    image: lanakod/samba-panel:latest
+    env_file: panel.env
     ports:
       - "80:3000"
     restart: unless-stopped
     volumes:
       - ./smb.conf:/etc/samba/smb.conf
       - ./smbpasswd:/etc/samba/smbpasswd
-````
+      - /var/run/docker.sock:/var/run/docker.sock
+```
 
-
-## 🔧 `.env.panel`
-
-Create a `.env` file named `.env.panel` with the following:
+### panel.env
 
 ```env
 SMB_CONF_PATH=/etc/samba/smb.conf
@@ -58,11 +62,11 @@ NEXT_PUBLIC_PANEL_URL=http://localhost
 CONTAINER_NAME=samba
 ```
 
-## 🧾 `smb.conf`
+## 📄 smb.conf
 
-Here’s an example `smb.conf` that includes a global section and will be updated by the panel for individual shares:
+Start with this minimal global configuration:
 
-```conf
+```ini
 [global]
    workgroup = WORKGROUP
    server string = Samba Server %v
@@ -76,62 +80,36 @@ Here’s an example `smb.conf` that includes a global section and will be update
    invalid users = root
 ```
 
-> ⚠️ Only the `[global]` section should exist initially. Share sections will be managed by the panel.
+> 🛠 Samba shares will be managed through the panel interface.
 
-## 📁 `smbpasswd`
+## ✅ smbpasswd
 
-Ensure that the `smbpasswd` file exists in your project root and is empty:
+Ensure the `smbpasswd` file is empty and present:
 
 ```bash
 touch smbpasswd
+chmod 600 smbpasswd
 ```
 
-> It will be populated automatically by Samba during user creation.
+## 🛠 Features
 
-## 🚀 Getting Started
+- 🧑‍💻 Create, update, delete Samba users
+- 📂 Create, update, delete Samba shares
+- 🔄 Automatically updates `smb.conf` and `smbpasswd`
+- 🔍 Live container status and logs
+- 🥧 Multi-architecture Docker image (amd64 + arm64)
 
-1. Clone the repository:
+## 🎯 Requirements
 
-   ```bash
-   git clone https://github.com/Lanakod/samba-panel.git
-   cd samba-panel
-   ```
+- Docker & Docker Compose or Docker CLI
+- Access to `/var/run/docker.sock` for container control
 
-2. Create the required config files:
+## 📝 License
 
-   * `smb.conf` (with `[global]` section)
-   * Empty `smbpasswd`
-   * `panel.env`
-
-3. Start the containers:
-
-   ```bash
-   docker compose up -d
-   ```
-
-4. Open your browser and go to [http://localhost](http://localhost)
-
-## 🧠 Features
-
-* Add/edit/remove Samba users
-* Add/edit/remove share folders
-* Automatically updates `smb.conf` and `smbpasswd`
-* Live status updates from Samba container
-
-## ✅ Requirements
-
-* Docker & Docker Compose
-* Permissions to mount volumes and manage containers
-
-## 🔒 Notes
-
-* The panel does not expose Samba credentials; it runs commands inside the Samba container.
-* Make sure your system firewall allows SMB ports: `137/udp`, `138/udp`, `139/tcp`, `445/tcp`
+Licensed under the [MIT License](LICENSE) — free to use and modify!
 
 ## 🛠 Maintainer
 
-Developed by [@lanakod](https://github.com/Lanakod)
+Developed and maintained by [@lanakod](https://github.com/Lanakod)
 
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
+Enjoy hassle-free Samba management!

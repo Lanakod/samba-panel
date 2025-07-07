@@ -1,32 +1,3 @@
-name: Docker Image CI
-
-on:
-  push:
-    branches: [ master ]
-    tags: [ v* ]
-
-env:
-  IMAGE_NAME: samba-panel
-  IMAGE_REPO: ghcr.io/lanakod/samba-panel
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Run tests
-        run: |
-          if [ -f docker-compose.test.yml ]; then
-            docker-compose --file docker-compose.test.yml build
-            docker-compose --file docker-compose.test.yml run sut
-          else
-            docker build . --file Dockerfile
-          fi
-
   docker:
     needs: test
     runs-on: ubuntu-latest
@@ -46,6 +17,12 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract metadata (tags, version)
         id: meta
@@ -73,7 +50,9 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ env.IMAGE_REPO }}:latest
-            ${{ env.IMAGE_REPO }}:latest-arm
+            ghcr.io/lanakod/samba-panel:latest
+            ghcr.io/lanakod/samba-panel:latest-arm
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/samba-panel:latest
+            docker.io/${{ secrets.DOCKERHUB_USERNAME }}/samba-panel:latest-arm
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
