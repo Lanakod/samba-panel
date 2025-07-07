@@ -35,7 +35,7 @@ services:
 
   panel:
     container_name: panel
-    image: ghcr.io/lanakod/samba-panel/samba-panel:latest
+    image: ghcr.io/lanakod/samba-panel:latest
     env_file: panel.env
     ports:
       - "80:3000"
