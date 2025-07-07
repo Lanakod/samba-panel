@@ -13,8 +13,8 @@ jobs:
       - name: Notify Telegram (Start)
         run: |
           TIMESTAMP=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M:%S %Z")
-          curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
-            -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_CHAT_ID }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d text="🚀 CI started for *${{ github.repository }}* at commit [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
             -d parse_mode=Markdown
 
@@ -37,8 +37,8 @@ jobs:
       - name: Notify Telegram (Test Success)
         run: |
           TIMESTAMP=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M:%S %Z")
-          curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
-            -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_CHAT_ID }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d text="✅ Tests passed for *${{ github.repository }}* at commit [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
             -d parse_mode=Markdown
 
@@ -72,8 +72,8 @@ jobs:
       - name: Notify Telegram (AMD64 Pushed)
         run: |
           TIMESTAMP=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M:%S %Z")
-          curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
-            -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_CHAT_ID }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d text="📦 *AMD64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest\`\n🔗 Commit: [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
             -d parse_mode=Markdown
 
@@ -107,8 +107,8 @@ jobs:
       - name: Notify Telegram (ARM64 Pushed)
         run: |
           TIMESTAMP=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M:%S %Z")
-          curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
-            -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_CHAT_ID }}/sendMessage \
+            -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
             -d text="📦 *ARM64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest-arm\`\n🔗 Commit: [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
             -d parse_mode=Markdown
 
