@@ -5,12 +5,6 @@ on:
     branches: [ master ]
     tags: [ v* ]
 
-env:
-  IMAGE_NAME: samba-panel
-  DOCKERHUB_REPO: lanakod/samba-panel
-  TELEGRAM_API: ${{ secrets.TELEGRAM_API }}
-  TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-
 jobs:
   notify-start:
     runs-on: ubuntu-latest
@@ -20,7 +14,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
             -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
-            -d text="🚀 CI started for *${{ github.repository }}* at commit [\`${{ github.sha::7 }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" \
+            -d text="🚀 CI started for *${{ github.repository }}* at commit [\`$(git rev-parse --short ${{ github.sha }})\`](https://github.com/${{ github.repository }}/commit/$(git rev-parse --short ${{ github.sha }}))" \
             -d parse_mode=Markdown
 
   test:
@@ -43,7 +37,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
             -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
-            -d text="✅ Tests passed for *${{ github.repository }}* at commit [\`${{ github.sha::7 }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" \
+            -d text="✅ Tests passed for *${{ github.repository }}* at commit [\`$(git rev-parse --short ${{ github.sha }})\`](https://github.com/${{ github.repository }}/commit/$(git rev-parse --short ${{ github.sha }}))" \
             -d parse_mode=Markdown
 
   docker-amd64:
@@ -77,7 +71,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
             -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
-            -d text="📦 *AMD64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest\`\n🔗 Commit: [\`${{ github.sha::7 }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" \
+            -d text="📦 *AMD64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest\`\n🔗 Commit: [\`$(git rev-parse --short ${{ github.sha }})\`](https://github.com/${{ github.repository }}/commit/$(git rev-parse --short ${{ github.sha }}))" \
             -d parse_mode=Markdown
 
   docker-arm64:
@@ -111,7 +105,7 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ env.TELEGRAM_API }}/sendMessage \
             -d chat_id=${{ env.TELEGRAM_CHAT_ID }} \
-            -d text="📦 *ARM64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest-arm\`\n🔗 Commit: [\`${{ github.sha::7 }}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha }})" \
+            -d text="📦 *ARM64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest-arm\`\n🔗 Commit: [\`$(git rev-parse --short ${{ github.sha }})\`](https://github.com/${{ github.repository }}/commit/$(git rev-parse --short ${{ github.sha }}))" \
             -d parse_mode=Markdown
 
   notify-failure:
@@ -124,5 +118,5 @@ jobs:
         run: |
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="❌ *Build failed* for [${{ github.repository }}@${{ github.sha }}](https://github.com/${{ github.repository }}/commit/${{ github.sha }}) on \`${{ github.ref_name }}\`" \
+            -d text="❌ *Build failed* for [${{ github.repository }}@$(git rev-parse --short ${{ github.sha }})](https://github.com/${{ github.repository }}/commit/$(git rev-parse --short ${{ github.sha }})) on \`${{ github.ref_name }}\`" \
             -d parse_mode=Markdown
