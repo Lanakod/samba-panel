@@ -22,7 +22,7 @@ services:
   panel:
     container_name: panel
     image: ghcr.io/lanakod/samba-panel:latest
-    env_file: .env.panel
+    env_file: .env
     ports:
       - "80:3000"
     restart: unless-stopped

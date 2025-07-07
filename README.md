@@ -36,7 +36,7 @@ services:
   panel:
     container_name: panel
     image: ghcr.io/lanakod/samba-panel:latest
-    env_file: panel.env
+    env_file: .env.panel
     ports:
       - "80:3000"
     restart: unless-stopped
@@ -46,9 +46,9 @@ services:
 ````
 
 
-## 🔧 `panel.env`
+## 🔧 `.env.panel`
 
-Create a `.env` file named `panel.env` with the following:
+Create a `.env` file named `.env.panel` with the following:
 
 ```env
 SMB_CONF_PATH=/etc/samba/smb.conf
