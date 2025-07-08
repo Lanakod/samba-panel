@@ -7,7 +7,7 @@
     <img src="https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square" alt="Docker Image">
   </a>
   <a href="https://github.com/Lanakod/samba-panel/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square" alt="Build Status">
+    <img src="https://img.shields.io/github/actions/workflow/status/lanakod/samba-panel/docker-image.yml" alt="Build Status">
   </a>
   <a href="https://github.com/Lanakod/samba-panel/blob/master/LICENSE">
     <img src="https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square" alt="License">
