@@ -1,25 +1,56 @@
+
 # Samba Panel 🧰
 
-[![Docker Image](https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square)](https://hub.docker.com/r/lanakod/samba-panel)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square)](https://github.com/Lanakod/samba-panel/actions)
-[![License](https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square)](LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square)](https://github.com/Lanakod/samba-panel/releases)
-![Docker Pulls](https://img.shields.io/docker/pulls/lanakod/samba-panel)
+<img src="banner.png" alt="Samba Panel Banner" width="100%">
 
-**Samba Panel** is a web-based interface for managing Samba users and file shares via Docker.
+<p align="center">
+  <a href="https://hub.docker.com/r/lanakod/samba-panel">
+    <img src="https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square" alt="Docker Image">
+  </a>
+  <a href="https://github.com/Lanakod/samba-panel/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square" alt="Build Status">
+  </a>
+  <a href="https://github.com/Lanakod/samba-panel/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square" alt="License">
+  </a>
+  <a href="https://github.com/Lanakod/samba-panel/releases">
+    <img src="https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square" alt="Downloads">
+  </a>
+  <img src="https://img.shields.io/docker/pulls/lanakod/samba-panel?style=flat-square" alt="Docker Pulls">
+  <img src="https://img.shields.io/github/last-commit/Lanakod/samba-panel?style=flat-square" alt="Last Commit">
+  <img src="https://img.shields.io/github/languages/top/Lanakod/samba-panel?style=flat-square" alt="Top Language">
+  <img src="https://img.shields.io/github/contributors/Lanakod/samba-panel?style=flat-square" alt="Contributors">
+  <img src="https://img.shields.io/badge/platform-linux%20%7C%20arm64%20%7C%20amd64-success?style=flat-square&logo=linux" alt="Platforms">
+</p>
+
+---
+
+**Samba Panel** is a sleek, web-based dashboard for managing Samba users and shares via Docker—ideal for NAS setups or home servers.
+
+---
 
 ## 🚀 Quick Start (Docker Run)
 
-You can run the panel directly without Docker Compose:
-
 ```bash
-docker run -d   --name samba-panel   -p 80:3000   -v "$PWD/smb.conf:/etc/samba/smb.conf"   -v "$PWD/smbpasswd:/etc/samba/smbpasswd"   -v /var/run/docker.sock:/var/run/docker.sock   -e SMB_CONF_PATH=/etc/samba/smb.conf   -e SMBPASSWD_PATH=/etc/samba/smbpasswd   -e NEXT_PUBLIC_PANEL_URL=http://localhost   -e CONTAINER_NAME=samba   lanakod/samba-panel:latest
+docker run -d \
+  --name samba-panel \
+  -p 80:3000 \
+  -v "$PWD/smb.conf:/etc/samba/smb.conf" \
+  -v "$PWD/smbpasswd:/etc/samba/smbpasswd" \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -e SMB_CONF_PATH=/etc/samba/smb.conf \
+  -e SMBPASSWD_PATH=/etc/samba/smbpasswd \
+  -e NEXT_PUBLIC_PANEL_URL=http://localhost \
+  -e CONTAINER_NAME=samba \
+  lanakod/samba-panel:latest
 ```
+
+---
 
 ## 🐳 Docker Compose Setup (recommended)
 
 ```yaml
-version: "3.8"
+name: samba-server
 services:
   samba:
     container_name: samba
@@ -53,7 +84,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
 
-### panel.env
+---
+
+### 🔧 panel.env
 
 ```env
 SMB_CONF_PATH=/etc/samba/smb.conf
@@ -62,9 +95,9 @@ NEXT_PUBLIC_PANEL_URL=http://localhost
 CONTAINER_NAME=samba
 ```
 
-## 📄 smb.conf
+---
 
-Start with this minimal global configuration:
+## 📄 smb.conf Template
 
 ```ini
 [global]
@@ -82,34 +115,42 @@ Start with this minimal global configuration:
 
 > 🛠 Samba shares will be managed through the panel interface.
 
-## ✅ smbpasswd
+---
 
-Ensure the `smbpasswd` file is empty and present:
+## ✅ smbpasswd Setup
 
 ```bash
 touch smbpasswd
 chmod 600 smbpasswd
 ```
 
+---
+
 ## 🛠 Features
 
-- 🧑‍💻 Create, update, delete Samba users
-- 📂 Create, update, delete Samba shares
+- 🧑‍💻 Create, update, and delete Samba users
+- 📂 Manage Samba shares easily
 - 🔄 Automatically updates `smb.conf` and `smbpasswd`
-- 🔍 Live container status and logs
-- 🥧 Multi-architecture Docker image (amd64 + arm64)
+- 📡 Real-time container monitoring & logs
+- 🧬 Supports multi-architecture builds (amd64 + arm64)
+- 🛡️ Read-only safe UI — config only changes via Docker volumes
+
+---
 
 ## 🎯 Requirements
 
-- Docker & Docker Compose or Docker CLI
-- Access to `/var/run/docker.sock` for container control
+- Docker + Docker Compose or Docker CLI
+- Access to `/var/run/docker.sock`
+
+---
 
 ## 📝 License
 
-Licensed under the [MIT License](LICENSE) — free to use and modify!
+Licensed under the [MIT License](LICENSE) — free to use and modify.
+
+---
 
 ## 🛠 Maintainer
 
-Developed and maintained by [@lanakod](https://github.com/Lanakod)
-
-Enjoy hassle-free Samba management!
+Built and maintained by [@lanakod](https://github.com/Lanakod)  
+Enjoy hassle-free Samba management with a modern interface!

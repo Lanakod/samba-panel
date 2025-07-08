@@ -1,4 +1,4 @@
-name: samba
+name: samba-server
 services:
   samba:
     container_name: samba
