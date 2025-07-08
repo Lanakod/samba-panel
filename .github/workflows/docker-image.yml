@@ -77,13 +77,19 @@ jobs:
         id: meta
         run: |
           IMAGE_TAGS="latest,latest-arm"
-
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             VERSION="${GITHUB_REF#refs/tags/v}"
             IMAGE_TAGS="${VERSION},${VERSION}-arm"
           fi
 
-          echo "TAGS=$IMAGE_TAGS" >> $GITHUB_ENV
+          {
+            echo "DOCKER_TAGS<<EOF"
+            for TAG in ${IMAGE_TAGS//,/ }; do
+              echo "${{ env.DOCKERHUB_REPO }}:$TAG"
+              echo "${{ env.GHCR_REPO }}:$TAG"
+            done
+            echo "EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Cache Docker layers
         uses: actions/cache@v3
@@ -99,9 +105,7 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/amd64
-          tags: |
-            ${{ env.GHCR_REPO }}:${{ env.TAGS }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.TAGS }}
+          tags: ${{ env.DOCKER_TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -144,13 +148,19 @@ jobs:
         id: meta
         run: |
           IMAGE_TAGS="latest,latest-arm"
-
           if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
             VERSION="${GITHUB_REF#refs/tags/v}"
             IMAGE_TAGS="${VERSION},${VERSION}-arm"
           fi
 
-          echo "TAGS=$IMAGE_TAGS" >> $GITHUB_ENV
+          {
+            echo "DOCKER_TAGS<<EOF"
+            for TAG in ${IMAGE_TAGS//,/ }; do
+              echo "${{ env.DOCKERHUB_REPO }}:$TAG"
+              echo "${{ env.GHCR_REPO }}:$TAG"
+            done
+            echo "EOF"
+          } >> "$GITHUB_ENV"
 
       - name: Cache Docker layers
         uses: actions/cache@v3
@@ -166,9 +176,7 @@ jobs:
           file: ./Dockerfile
           push: true
           platforms: linux/arm64
-          tags: |
-            ${{ env.GHCR_REPO }}:${{ env.TAGS }}
-            ${{ env.DOCKERHUB_REPO }}:${{ env.TAGS }}
+          tags: ${{ env.DOCKER_TAGS }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
