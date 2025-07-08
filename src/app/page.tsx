@@ -1,5 +1,5 @@
 import { ContainerControls, ServerLogs, ServerStatus, SharesList, UserList } from "@/components";
-import { Stack, Group } from "@mantine/core";
+import { Stack } from "@mantine/core";
 
 export default function Home() {
   return (
