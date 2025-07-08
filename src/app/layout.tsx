@@ -19,6 +19,7 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
         <Script src="/env.js" strategy="beforeInteractive" />
+        <meta name="apple-mobile-web-app-title" content="Samba Panel" />
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">

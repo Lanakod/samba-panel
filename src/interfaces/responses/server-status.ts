@@ -8,6 +8,7 @@ export interface IDockerStats {
 export type ContainerStatus = 'running' | 'stopped' | 'restarting' | 'fetching'
 
 type ServerRunning = {
+    type: 'status',
     state: ContainerStatus,
     cpuPercent: number;
     memUsageMB: number;
@@ -17,6 +18,7 @@ type ServerRunning = {
 }
 
 type ServerStopped = {
+    type: 'status',
     state: "stopped" | "restarting" | 'fetching',
     time: string
 }
@@ -24,3 +26,8 @@ type ServerStopped = {
 export type GetServerStatusResponse = ServerRunning | ServerStopped
 
 
+export type GetServerLogsResponse = {
+    type: 'log',
+    data: string,
+    time: string
+}

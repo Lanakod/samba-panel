@@ -15,6 +15,7 @@ export const ServerStatus: FC = () => {
         if(len)
             return statusArr[len - 1]
         return {
+            type: 'status',
             state: 'fetching',
             time: new Date().toLocaleTimeString()
         }
@@ -27,7 +28,7 @@ export const ServerStatus: FC = () => {
         return 'http://localhost:3000'; // fallback
     }, []);
 
-    const socket = useWebSocket(() => panelUrl + '/api/server/status/ws')
+    const socket = useWebSocket(() => panelUrl + '/api/server/status')
 
 
     const containerState = useMemo(() => {
@@ -81,7 +82,7 @@ export const ServerStatus: FC = () => {
             <CardSection withBorder inheritPadding py="xs">
                 <Text fw={500}>Server Status</Text>
             </CardSection>
-            <Stack gap="xs" pos='relative'>
+            <Stack gap="xs" pos='relative' p='xs'>
                 <LoadingOverlay visible={status.state === 'fetching'} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
                 <Group justify="space-between" align="center">
                     <Text fw="600">Status:</Text>

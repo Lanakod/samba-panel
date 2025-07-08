@@ -8,7 +8,7 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconPencil, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-react'
 import { CreateUserModal, UpdateUserModal } from "./Modals";
 
-const {Tr, Td, Th, Thead, Tbody} = Table
+const {Tr, Td, Th, Thead, Tbody, ScrollContainer} = Table
 const {Target, Dropdown} = Popover
 
 
@@ -69,7 +69,6 @@ export const UserList: FC = () => {
         <UpdateUserModal close={updateClose} open={updateOpen} opened={updateOpened} setUsers={setUsers} values={updateValues}/>
 
         <Card withBorder shadow="sm" radius="md" pos='relative'>
-            <LoadingOverlay visible={isFetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
             <CardSection withBorder inheritPadding py="xs">
                 <Group align="center" gap='xs'>
                     <Text fw={500}>Users</Text>
@@ -82,17 +81,20 @@ export const UserList: FC = () => {
                     </ActionIcon>
                 </Group>
             </CardSection>
-            <Table>
-                <Thead>
-                    <Tr>
-                        <Th>Username</Th>
-                        <Th>UID</Th>
-                        <Th>Type</Th>
-                        <Th>Actions</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>{rows}</Tbody>
-            </Table>
+            <ScrollContainer minWidth={500} maxHeight={300}>
+                <LoadingOverlay visible={isFetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
+                <Table stickyHeader>
+                    <Thead>
+                        <Tr>
+                            <Th>Username</Th>
+                            <Th>UID</Th>
+                            <Th>Type</Th>
+                            <Th>Actions</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>{rows}</Tbody>
+                </Table>
+            </ScrollContainer>
         </Card>
         </>
     )

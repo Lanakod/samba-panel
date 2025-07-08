@@ -8,7 +8,7 @@ import { DeleteShare, FetchShares } from "@/api/shares";
 import { IShare, UpdateShareForm } from "@/interfaces";
 import { CreateShareModal, UpdateShareModal } from "./Modals";
 
-const {Tr, Td, Th, Thead, Tbody} = Table
+const {Tr, Td, Th, Thead, Tbody, ScrollContainer} = Table
 const {Target, Dropdown} = Popover
 
 const {Section: CardSection} = Card
@@ -67,7 +67,6 @@ export const SharesList: FC = () => {
         <UpdateShareModal close={updateClose} open={updateOpen} opened={updateOpened} setShares={setShares} values={updateValues}/>
 
         <Card withBorder shadow="sm" radius="md" pos='relative'>
-            <LoadingOverlay visible={isFetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
             <CardSection withBorder inheritPadding py="xs">
                 <Group align="center" gap='xs'>
                     <Text fw={500}>Shares</Text>
@@ -80,18 +79,21 @@ export const SharesList: FC = () => {
                     </ActionIcon>
                 </Group>
             </CardSection>
-            <Table>
-                <Thead>
-                    <Tr>
-                        <Th>Name</Th>
-                        <Th>Read-Only</Th>
-                        <Th>Path</Th>
-                        <Th>Comment</Th>
-                        <Th>Actions</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>{rows}</Tbody>
-            </Table>
+            <ScrollContainer minWidth={500} maxHeight={300}>
+                <LoadingOverlay visible={isFetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
+                <Table stickyHeader>
+                    <Thead>
+                        <Tr>
+                            <Th>Name</Th>
+                            <Th>Read-Only</Th>
+                            <Th>Path</Th>
+                            <Th>Comment</Th>
+                            <Th>Actions</Th>
+                        </Tr>
+                    </Thead>
+                    <Tbody>{rows}</Tbody>
+                </Table>
+            </ScrollContainer>
         </Card>
         </>
     )
