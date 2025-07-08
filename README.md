@@ -2,13 +2,25 @@
 
 <img src="banner.png" alt="Samba Panel Banner" width="100%">
 
-[![Docker Image](https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square)](https://hub.docker.com/r/lanakod/samba-panel)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square)](https://github.com/Lanakod/samba-panel/actions)
-[![License](https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square)](LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square)](https://github.com/Lanakod/samba-panel/releases)
-![Docker Pulls](https://img.shields.io/docker/pulls/lanakod/samba-panel)
-![Platform](https://img.shields.io/badge/platform-docker-green?style=flat-square&logo=docker)
-![Arch](https://img.shields.io/badge/arch-amd64%20%7C%20arm64-orange?style=flat-square)
+<p align="center">
+  <a href="https://hub.docker.com/r/lanakod/samba-panel">
+    <img src="https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square" alt="Docker Image">
+  </a>
+  <a href="https://github.com/Lanakod/samba-panel/actions">
+    <img src="https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square" alt="Build Status">
+  </a>
+  <a href="https://github.com/Lanakod/samba-panel/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square" alt="License">
+  </a>
+  <a href="https://github.com/Lanakod/samba-panel/releases">
+    <img src="https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square" alt="Downloads">
+  </a>
+  <img src="https://img.shields.io/docker/pulls/lanakod/samba-panel?style=flat-square" alt="Docker Pulls">
+  <img src="https://img.shields.io/github/last-commit/Lanakod/samba-panel?style=flat-square" alt="Last Commit">
+  <img src="https://img.shields.io/github/languages/top/Lanakod/samba-panel?style=flat-square" alt="Top Language">
+  <img src="https://img.shields.io/github/contributors/Lanakod/samba-panel?style=flat-square" alt="Contributors">
+  <img src="https://img.shields.io/badge/platform-linux%20%7C%20arm64%20%7C%20amd64-success?style=flat-square&logo=linux" alt="Platforms">
+</p>
 
 **Samba Panel** is a web-based interface for managing Samba users and file shares via Docker.
 
