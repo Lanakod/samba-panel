@@ -114,7 +114,8 @@ jobs:
           TIMESTAMP=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M:%S %Z")
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="📦 *AMD64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest\`\n🔗 Commit: [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
+            -d text="📦 *AMD64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest\`
+            🔗 Commit: [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
             -d parse_mode=Markdown
 
   docker-arm64:
@@ -185,7 +186,8 @@ jobs:
           TIMESTAMP=$(TZ='Europe/Moscow' date +"%Y-%m-%d %H:%M:%S %Z")
           curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_TOKEN }}/sendMessage \
             -d chat_id=${{ secrets.TELEGRAM_CHAT_ID }} \
-            -d text="📦 *ARM64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest-arm\`\n🔗 Commit: [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
+            -d text="📦 *ARM64 Docker image pushed* as \`${{ env.DOCKERHUB_REPO }}:latest-arm\`
+            🔗 Commit: [\`${{ github.sha}}\`](https://github.com/${{ github.repository }}/commit/${{ github.sha}}) on \`${TIMESTAMP}\`" \
             -d parse_mode=Markdown
 
   notify-failure:
