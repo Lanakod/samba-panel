@@ -1,35 +1,24 @@
-
 # Samba Panel 🧰
 
 <img src="banner.png" alt="Samba Panel Banner" width="100%">
 
-<p align="center">
-  <a href="https://hub.docker.com/r/lanakod/samba-panel">
-    <img src="https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square" alt="Docker Image">
-  </a>
-  <a href="https://github.com/Lanakod/samba-panel/actions">
-    <img src="https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square" alt="Build Status">
-  </a>
-  <a href="https://github.com/Lanakod/samba-panel/blob/master/LICENSE">
-    <img src="https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square" alt="License">
-  </a>
-  <a href="https://github.com/Lanakod/samba-panel/releases">
-    <img src="https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square" alt="Downloads">
-  </a>
-  <img src="https://img.shields.io/docker/pulls/lanakod/samba-panel?style=flat-square" alt="Docker Pulls">
-  <img src="https://img.shields.io/github/last-commit/Lanakod/samba-panel?style=flat-square" alt="Last Commit">
-  <img src="https://img.shields.io/github/languages/top/Lanakod/samba-panel?style=flat-square" alt="Top Language">
-  <img src="https://img.shields.io/github/contributors/Lanakod/samba-panel?style=flat-square" alt="Contributors">
-  <img src="https://img.shields.io/badge/platform-linux%20%7C%20arm64%20%7C%20amd64-success?style=flat-square&logo=linux" alt="Platforms">
-</p>
+[![Docker Image](https://img.shields.io/badge/docker-docker.io%2Flanakod%2Fsamba--panel-blue?logo=docker&style=flat-square)](https://hub.docker.com/r/lanakod/samba-panel)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Lanakod/samba-panel/docker.yml?branch=master&style=flat-square)](https://github.com/Lanakod/samba-panel/actions)
+[![License](https://img.shields.io/github/license/Lanakod/samba-panel?style=flat-square)](LICENSE)
+[![Downloads](https://img.shields.io/github/downloads/Lanakod/samba-panel/total.svg?style=flat-square)](https://github.com/Lanakod/samba-panel/releases)
+![Docker Pulls](https://img.shields.io/docker/pulls/lanakod/samba-panel)
+![Platform](https://img.shields.io/badge/platform-docker-green?style=flat-square&logo=docker)
+![Arch](https://img.shields.io/badge/arch-amd64%20%7C%20arm64-orange?style=flat-square)
 
----
+**Samba Panel** is a web-based interface for managing Samba users and file shares via Docker.
 
-**Samba Panel** is a sleek, web-based dashboard for managing Samba users and shares via Docker—ideal for NAS setups or home servers.
+👉 **Check out the [`example/`](example) folder** for a working Docker Compose setup including config files.
 
 ---
 
 ## 🚀 Quick Start (Docker Run)
+
+You can run the panel directly without Docker Compose:
 
 ```bash
 docker run -d \
@@ -44,8 +33,6 @@ docker run -d \
   -e CONTAINER_NAME=samba \
   lanakod/samba-panel:latest
 ```
-
----
 
 ## 🐳 Docker Compose Setup (recommended)
 
@@ -84,9 +71,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 ```
 
----
-
-### 🔧 panel.env
+### panel.env
 
 ```env
 SMB_CONF_PATH=/etc/samba/smb.conf
@@ -95,9 +80,9 @@ NEXT_PUBLIC_PANEL_URL=http://localhost
 CONTAINER_NAME=samba
 ```
 
----
+## 📄 smb.conf
 
-## 📄 smb.conf Template
+Start with this minimal global configuration:
 
 ```ini
 [global]
@@ -115,42 +100,34 @@ CONTAINER_NAME=samba
 
 > 🛠 Samba shares will be managed through the panel interface.
 
----
+## ✅ smbpasswd
 
-## ✅ smbpasswd Setup
+Ensure the `smbpasswd` file is empty and present:
 
 ```bash
 touch smbpasswd
 chmod 600 smbpasswd
 ```
 
----
-
 ## 🛠 Features
 
-- 🧑‍💻 Create, update, and delete Samba users
-- 📂 Manage Samba shares easily
+- 🧑‍💻 Create, update, delete Samba users
+- 📂 Create, update, delete Samba shares
 - 🔄 Automatically updates `smb.conf` and `smbpasswd`
-- 📡 Real-time container monitoring & logs
-- 🧬 Supports multi-architecture builds (amd64 + arm64)
-- 🛡️ Read-only safe UI — config only changes via Docker volumes
-
----
+- 🔍 Live container status and logs
+- 🥧 Multi-architecture Docker image (amd64 + arm64)
 
 ## 🎯 Requirements
 
-- Docker + Docker Compose or Docker CLI
-- Access to `/var/run/docker.sock`
-
----
+- Docker & Docker Compose or Docker CLI
+- Access to `/var/run/docker.sock` for container control
 
 ## 📝 License
 
-Licensed under the [MIT License](LICENSE) — free to use and modify.
-
----
+Licensed under the [MIT License](LICENSE) — free to use and modify!
 
 ## 🛠 Maintainer
 
-Built and maintained by [@lanakod](https://github.com/Lanakod)  
-Enjoy hassle-free Samba management with a modern interface!
+Developed and maintained by [@lanakod](https://github.com/Lanakod)
+
+Enjoy hassle-free Samba management!
