@@ -1,4 +1,4 @@
-import { ContainerControls, ServerLogs, ServerStatus, SharesList, UserList } from "@/components";
+import { ContainerControls, ServerStatus } from "@/components";
 import { Stack } from "@mantine/core";
 
 export default function Home() {
@@ -6,9 +6,6 @@ export default function Home() {
     <Stack w='full'>
       <ServerStatus/>
       <ContainerControls/>
-      <ServerLogs/>
-      <UserList/>
-      <SharesList/>
     </Stack>
   );
 }

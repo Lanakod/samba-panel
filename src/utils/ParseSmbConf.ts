@@ -37,9 +37,6 @@ export function parseFile(filePath: string): Section[] {
 }
 
 export function getSection(sections: Section[], sectionName: string): Section | null {
-  if (sectionName.toLowerCase() === 'global') {
-    return null;
-  }
   return sections.find(sec => sec.name.toLowerCase() === sectionName.toLowerCase()) || null;
 }
 

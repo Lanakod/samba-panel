@@ -9,6 +9,7 @@ import { IconPencil, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-reac
 import { CreateUserModal, UpdateUserModal } from "./Modals";
 
 const {Tr, Td, Th, Thead, Tbody, ScrollContainer} = Table
+const {Group: ActionIconGroup} = ActionIcon
 const {Target, Dropdown} = Popover
 
 
@@ -28,12 +29,12 @@ export const UserList: FC = () => {
 
 
     const rows = useMemo(() => {
-        return users.map(u => <Tr key={u.username}>
+        return users.map((u, i) => <Tr key={i}>
             <Td>{u.username}</Td>
             <Td>{u.uid}</Td>
             <Td>{u.type}</Td>
             <Td>
-                <Group>
+                <ActionIconGroup>
                     <ActionIcon onClick={() => {
                         setUpdateValues({
                             username: u.username,
@@ -58,7 +59,7 @@ export const UserList: FC = () => {
                             </Stack>
                         </Dropdown>
                     </Popover>
-                </Group>
+                </ActionIconGroup>
             </Td>
         </Tr>)
     }, [users])
@@ -72,17 +73,19 @@ export const UserList: FC = () => {
             <CardSection withBorder inheritPadding py="xs">
                 <Group align="center" gap='xs'>
                     <Text fw={500}>Users</Text>
-                    <ActionIcon variant="light" aria-label="Refresh Users" onClick={() => FetchUsers(setUsers, setIsFetching)}>
-                        <IconRefresh style={{ width: '70%', height: '70%' }} stroke={1.5} />
-                    </ActionIcon>
+                    <ActionIconGroup>
+                        <ActionIcon variant="light" aria-label="Refresh Users" onClick={() => FetchUsers(setUsers, setIsFetching)}>
+                            <IconRefresh style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                        </ActionIcon>
 
-                    <ActionIcon variant="light" aria-label="Add User" onClick={createOpen}>
-                        <IconPlus style={{ width: '70%', height: '70%' }} stroke={1.5} />
-                    </ActionIcon>
+                        <ActionIcon variant="light" aria-label="Add User" onClick={createOpen}>
+                            <IconPlus style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                        </ActionIcon>
+                    </ActionIconGroup>
                 </Group>
             </CardSection>
-            <ScrollContainer minWidth={500} maxHeight={300}>
-                <LoadingOverlay visible={isFetching} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
+            <ScrollContainer minWidth={500} maxHeight={600}>
+                <LoadingOverlay visible={isFetching} zIndex={5} overlayProps={{ radius: "sm", blur: 2 }}/>
                 <Table stickyHeader>
                     <Thead>
                         <Tr>

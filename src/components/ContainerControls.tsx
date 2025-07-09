@@ -2,19 +2,37 @@
 
 import { FC } from "react";
 import { Button, Card, Group, Text } from "@mantine/core";
-import { IconPlayerPlay, IconRefresh, IconSquare } from "@tabler/icons-react";
+import { IconAlertTriangle, IconCheck, IconPlayerPlay, IconRefresh, IconSquare } from "@tabler/icons-react";
+import { SendCommandResponse } from "@/interfaces";
+import { notifications } from "@mantine/notifications";
 
 const {Section: CardSection} = Card
 
 type Action = 'stop' | 'start' | 'restart'
 
 const SendCommand = async (action: Action) => {
-    await fetch(`/api/server/${action}`, {
+    const res = await fetch(`/api/server/${action}`, {
         method: 'POST',
         headers: {
             'content-type': 'application/json'
         }
     })
+    const data: SendCommandResponse = await res.json()
+    if(data.status) {
+        notifications.show({
+          title: 'Command sent',
+          message: data.message,
+          color: 'green',
+          icon: <IconCheck size={18} />,
+        });
+    } else {
+        notifications.show({
+          title: 'Error',
+          message: data.message,
+          color: 'red',
+          icon: <IconAlertTriangle size={18} />,
+        });
+    }
 }
 
 export const ContainerControls: FC = () => {

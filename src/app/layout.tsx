@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import Script from 'next/script';
 import "./globals.css";
-import { ColorSchemeScript, Container, MantineProvider, mantineHtmlProps } from '@mantine/core';
+import { ColorSchemeScript, MantineProvider, mantineHtmlProps } from '@mantine/core';
 import { ModalsProvider } from "@mantine/modals";
+import { Shell } from "@/components";
+import { Notifications } from "@mantine/notifications";
 
 export const metadata: Metadata = {
   title: "Samba Control Panel",
@@ -23,10 +25,9 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider defaultColorScheme="dark">
+          <Notifications />
           <ModalsProvider>
-            <Container fluid p='md' maw="74em">
-              {children}
-            </Container>
+            <Shell>{children}</Shell>
           </ModalsProvider>
         </MantineProvider>
       </body>

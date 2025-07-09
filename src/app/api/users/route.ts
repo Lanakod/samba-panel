@@ -208,20 +208,29 @@ export async function DELETE(request: NextRequest) {
 }
 
 export async function GET() {
-    const container = dockerClient.getContainer(env.CONTAINER_NAME)
-    const {output, error} = await execInContainer(container, ["pdbedit", "-L"])
-    if(error) {
-        return NextResponse.json({status: false, error}, {status: 500})
-    }
-    const users = output
-      .split('\n')
-      .filter(line => line.trim())
-      .map(line => {
-        const [username, uid, type] = line.split(':');
-        return { username, uid, type };
+  try {
+      const container = dockerClient.getContainer(env.CONTAINER_NAME)
+      const {output, error} = await execInContainer(container, ["pdbedit", "-L"])
+      if(error) {
+          return NextResponse.json({status: false, error}, {status: 500})
+      }
+      const users = output
+        .split('\n')
+        .filter(line => line.trim())
+        .map(line => {
+          const [username, uid, type] = line.split(':');
+          return { username, uid, type };
+        })
+      return NextResponse.json({
+        status: true,
+        users
       })
+  } catch (e) {
     return NextResponse.json({
-      status: true,
-      users
-    })
+      status: false,
+      message: "Internal Server Error",
+      error: e
+    }, {status: 500})
+  }
+
 }

@@ -18,18 +18,18 @@ export async function POST(request: NextRequest,  { params }: Data ) {
         switch (action) {
             case "stop": {
                 await container.stop()
-                return NextResponse.json({stopped: true})
+                return NextResponse.json({success: true, message: "Stopping server"})
             }
             case "restart": {
                 await container.restart()
-                return NextResponse.json({restarted: true})
+                return NextResponse.json({success: true, message: "Restarting server"})
             }
             case "start": {
                 await container.start()
-                return NextResponse.json({started: true})
+                return NextResponse.json({success: true, message: "Starting server"})
             }
         }
     } catch (e) {
-        return NextResponse.json({ error: e }, { status: 500 })
+        return NextResponse.json({ success: false, message: "Error sending command to container", error: e }, { status: 500 })
     }
 }

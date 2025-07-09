@@ -83,7 +83,7 @@ export const ServerStatus: FC = () => {
                 <Text fw={500}>Server Status</Text>
             </CardSection>
             <Stack gap="xs" pos='relative' p='xs'>
-                <LoadingOverlay visible={status.state === 'fetching'} zIndex={1000} overlayProps={{ radius: "sm", blur: 2 }}/>
+                <LoadingOverlay visible={status.state === 'fetching'} zIndex={5} overlayProps={{ radius: "sm", blur: 2 }}/>
                 <Group justify="space-between" align="center">
                     <Text fw="600">Status:</Text>
                     {containerState}
