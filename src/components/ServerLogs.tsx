@@ -1,12 +1,11 @@
 'use client'
 
-import { FC, useEffect, useMemo, useState } from "react";
-import { Card,  Table, Text } from "@mantine/core";
-import { GetServerLogsResponse } from "@/interfaces";
-import { useWebSocket } from "@/hooks";
+import {FC, useEffect, useMemo, useState} from "react";
+import {Card, Table, Text} from "@mantine/core";
+import {GetServerLogsResponse} from "@/interfaces";
+import {useWebSocket} from "@/hooks";
 
 const {Tr, Td, Th, Thead, Tbody, ScrollContainer} = Table
-
 const {Section: CardSection} = Card
 
 export const ServerLogs: FC = () => {
@@ -34,18 +33,20 @@ export const ServerLogs: FC = () => {
             controller,
         );
 
-        socket?.addEventListener('error', () => {}, controller);
-        socket?.addEventListener('close', () => {}, controller);
+        socket?.addEventListener('error', () => {
+        }, controller);
+        socket?.addEventListener('close', () => {
+        }, controller);
 
         return () => controller.abort();
     }, [socket]);
 
     const rows = useMemo(() => {
-            return logs.map(log => <Tr key={log.data}>
-                <Td>{log.time}</Td>
-                <Td>{log.data}</Td>
-            </Tr>)
-        }, [logs])
+        return logs.map(log => <Tr key={log.data}>
+            <Td>{log.time}</Td>
+            <Td>{log.data}</Td>
+        </Tr>)
+    }, [logs])
 
     return (
         <Card withBorder shadow="sm" radius="md">

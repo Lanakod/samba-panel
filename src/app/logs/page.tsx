@@ -1,4 +1,4 @@
-import { ServerLogs } from "@/components";
+import {ServerLogs} from "@/components";
 
 export default function LogsPage() {
     return (

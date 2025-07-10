@@ -1,14 +1,14 @@
-type CreateSettingSuccess = {
+type UpdateSettingSuccess = {
     status: true
     message: string
     setting: Record<string, string>
 }
-type CreateSettingFailed = {
+type UpdateSettingFailed = {
     status: false,
     message: string,
     error: unknown
 }
-export type CreateSettingResponse = CreateSettingSuccess | CreateSettingFailed
+export type UpdateSettingsResponse = UpdateSettingSuccess | UpdateSettingFailed
 
 type GetSettingsSuccess = {
     status: true

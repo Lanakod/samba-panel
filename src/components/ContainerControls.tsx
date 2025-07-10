@@ -1,10 +1,10 @@
 'use client'
 
-import { FC } from "react";
-import { Button, Card, Group, Text } from "@mantine/core";
-import { IconAlertTriangle, IconCheck, IconPlayerPlay, IconRefresh, IconSquare } from "@tabler/icons-react";
-import { SendCommandResponse } from "@/interfaces";
-import { notifications } from "@mantine/notifications";
+import {FC} from "react";
+import {Button, Card, Group, Text} from "@mantine/core";
+import {IconAlertTriangle, IconCheck, IconPlayerPlay, IconRefresh, IconSquare} from "@tabler/icons-react";
+import {SendCommandResponse} from "@/interfaces";
+import {notifications} from "@mantine/notifications";
 
 const {Section: CardSection} = Card
 
@@ -18,19 +18,19 @@ const SendCommand = async (action: Action) => {
         }
     })
     const data: SendCommandResponse = await res.json()
-    if(data.status) {
+    if (data.status) {
         notifications.show({
-          title: 'Command sent',
-          message: data.message,
-          color: 'green',
-          icon: <IconCheck size={18} />,
+            title: 'Command sent',
+            message: data.message,
+            color: 'green',
+            icon: <IconCheck size={18}/>,
         });
     } else {
         notifications.show({
-          title: 'Error',
-          message: data.message,
-          color: 'red',
-          icon: <IconAlertTriangle size={18} />,
+            title: 'Error',
+            message: data.message,
+            color: 'red',
+            icon: <IconAlertTriangle size={18}/>,
         });
     }
 }
@@ -42,9 +42,12 @@ export const ContainerControls: FC = () => {
                 <Text fw={500}>Container Controls</Text>
             </CardSection>
             <Group mt="md">
-                <Button leftSection={<IconRefresh size="16"/>} variant="light" onClick={() => SendCommand('restart')}>Restart</Button>
-                <Button leftSection={<IconSquare size="16"/>} variant="light" color="red" onClick={() => SendCommand('stop')}>Stop</Button>
-                <Button leftSection={<IconPlayerPlay size="16"/>} variant="light" color="green" onClick={() => SendCommand('start')}>Start</Button>
+                <Button leftSection={<IconRefresh size="16"/>} variant="light"
+                        onClick={() => SendCommand('restart')}>Restart</Button>
+                <Button leftSection={<IconSquare size="16"/>} variant="light" color="red"
+                        onClick={() => SendCommand('stop')}>Stop</Button>
+                <Button leftSection={<IconPlayerPlay size="16"/>} variant="light" color="green"
+                        onClick={() => SendCommand('start')}>Start</Button>
             </Group>
         </Card>
     )

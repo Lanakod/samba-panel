@@ -1,12 +1,12 @@
 'use client'
 
-import { DeleteUser, FetchUsers } from "@/api";
-import { IUser, UpdateUserForm } from "@/interfaces";
-import { FC, useEffect, useMemo, useState } from "react";
-import { Button, Card, Group, Popover, Text, Table, ActionIcon, Stack, LoadingOverlay } from "@mantine/core";
-import { useDisclosure } from "@mantine/hooks";
-import { IconPencil, IconPlus, IconRefresh, IconTrash } from '@tabler/icons-react'
-import { CreateUserModal, UpdateUserModal } from "./Modals";
+import {DeleteUser, FetchUsers} from "@/api";
+import {IUser, UpdateUserForm} from "@/interfaces";
+import {FC, useEffect, useMemo, useState} from "react";
+import {ActionIcon, Button, Card, Group, LoadingOverlay, Popover, Stack, Table, Text} from "@mantine/core";
+import {useDisclosure} from "@mantine/hooks";
+import {IconPencil, IconPlus, IconRefresh, IconTrash} from '@tabler/icons-react'
+import {CreateUserModal, UpdateUserModal} from "./Modals";
 
 const {Tr, Td, Th, Thead, Tbody, ScrollContainer} = Table
 const {Group: ActionIconGroup} = ActionIcon
@@ -22,8 +22,8 @@ export const UserList: FC = () => {
         FetchUsers(setUsers, setIsFetching)
     }, [])
 
-    const [createOpened, { open: createOpen, close: createClose }] = useDisclosure(false);
-    const [updateOpened, { open: updateOpen, close: updateClose }] = useDisclosure(false);
+    const [createOpened, {open: createOpen, close: createClose}] = useDisclosure(false);
+    const [updateOpened, {open: updateOpen, close: updateClose}] = useDisclosure(false);
 
     const [updateValues, setUpdateValues] = useState<UpdateUserForm | null>(null)
 
@@ -42,20 +42,20 @@ export const UserList: FC = () => {
                         })
                         updateOpen()
                     }} variant="light" color="yellow" aria-label="Edit">
-                        <IconPencil style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                        <IconPencil style={{width: '70%', height: '70%'}} stroke={1.5}/>
                     </ActionIcon>
                     <Popover>
                         <Target>
                             <ActionIcon variant="light" color="red" aria-label="Delete">
-                                <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
+                                <IconTrash style={{width: '70%', height: '70%'}} stroke={1.5}/>
                             </ActionIcon>
                         </Target>
                         <Dropdown>
                             <Stack>
                                 <Text>Delete this user?</Text>
                                 <Button
-                                onClick={() => DeleteUser(u.username, setUsers)}
-                                color="red">Yes</Button>
+                                    onClick={() => DeleteUser(u.username, setUsers)}
+                                    color="red">Yes</Button>
                             </Stack>
                         </Dropdown>
                     </Popover>
@@ -66,39 +66,41 @@ export const UserList: FC = () => {
 
     return (
         <>
-        <CreateUserModal close={createClose} open={createOpen} opened={createOpened} setUsers={setUsers}/>
-        <UpdateUserModal close={updateClose} open={updateOpen} opened={updateOpened} setUsers={setUsers} values={updateValues}/>
+            <CreateUserModal close={createClose} open={createOpen} opened={createOpened} setUsers={setUsers}/>
+            <UpdateUserModal close={updateClose} open={updateOpen} opened={updateOpened} setUsers={setUsers}
+                             values={updateValues}/>
 
-        <Card withBorder shadow="sm" radius="md" pos='relative'>
-            <CardSection withBorder inheritPadding py="xs">
-                <Group align="center" gap='xs'>
-                    <Text fw={500}>Users</Text>
-                    <ActionIconGroup>
-                        <ActionIcon variant="light" aria-label="Refresh Users" onClick={() => FetchUsers(setUsers, setIsFetching)}>
-                            <IconRefresh style={{ width: '70%', height: '70%' }} stroke={1.5} />
-                        </ActionIcon>
+            <Card withBorder shadow="sm" radius="md" pos='relative'>
+                <CardSection withBorder inheritPadding py="xs">
+                    <Group align="center" gap='xs'>
+                        <Text fw={500}>Users</Text>
+                        <ActionIconGroup>
+                            <ActionIcon variant="light" aria-label="Refresh Users"
+                                        onClick={() => FetchUsers(setUsers, setIsFetching)}>
+                                <IconRefresh style={{width: '70%', height: '70%'}} stroke={1.5}/>
+                            </ActionIcon>
 
-                        <ActionIcon variant="light" aria-label="Add User" onClick={createOpen}>
-                            <IconPlus style={{ width: '70%', height: '70%' }} stroke={1.5} />
-                        </ActionIcon>
-                    </ActionIconGroup>
-                </Group>
-            </CardSection>
-            <ScrollContainer minWidth={500} maxHeight={600}>
-                <LoadingOverlay visible={isFetching} zIndex={5} overlayProps={{ radius: "sm", blur: 2 }}/>
-                <Table stickyHeader>
-                    <Thead>
-                        <Tr>
-                            <Th>Username</Th>
-                            <Th>UID</Th>
-                            <Th>Type</Th>
-                            <Th>Actions</Th>
-                        </Tr>
-                    </Thead>
-                    <Tbody>{rows}</Tbody>
-                </Table>
-            </ScrollContainer>
-        </Card>
+                            <ActionIcon variant="light" aria-label="Add User" onClick={createOpen}>
+                                <IconPlus style={{width: '70%', height: '70%'}} stroke={1.5}/>
+                            </ActionIcon>
+                        </ActionIconGroup>
+                    </Group>
+                </CardSection>
+                <ScrollContainer minWidth={500} maxHeight={600}>
+                    <LoadingOverlay visible={isFetching} zIndex={5} overlayProps={{radius: "sm", blur: 2}}/>
+                    <Table stickyHeader>
+                        <Thead>
+                            <Tr>
+                                <Th>Username</Th>
+                                <Th>UID</Th>
+                                <Th>Type</Th>
+                                <Th>Actions</Th>
+                            </Tr>
+                        </Thead>
+                        <Tbody>{rows}</Tbody>
+                    </Table>
+                </ScrollContainer>
+            </Card>
         </>
     )
 }

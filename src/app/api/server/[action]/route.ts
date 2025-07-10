@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { env } from '@/env';
-import { dockerClient } from '@/utils';
+import {NextRequest, NextResponse} from 'next/server'
+import {env} from '@/env';
+import {dockerClient} from '@/utils';
 
 
 type Params = {
@@ -11,9 +11,9 @@ type Data = {
     params: Promise<Params>
 }
 
-export async function POST(request: NextRequest,  { params }: Data ) {
+export async function POST(request: NextRequest, {params}: Data) {
     try {
-        const { action } = await params
+        const {action} = await params
         const container = dockerClient.getContainer(env.CONTAINER_NAME)
         switch (action) {
             case "stop": {
@@ -30,6 +30,10 @@ export async function POST(request: NextRequest,  { params }: Data ) {
             }
         }
     } catch (e) {
-        return NextResponse.json({ success: false, message: "Error sending command to container", error: e }, { status: 500 })
+        return NextResponse.json({
+            success: false,
+            message: "Error sending command to container",
+            error: e
+        }, {status: 500})
     }
 }

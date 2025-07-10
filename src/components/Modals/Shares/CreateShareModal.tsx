@@ -1,12 +1,11 @@
 'use client'
-import { Dispatch, FC, SetStateAction } from "react";
-import { Button, Checkbox, Group, Modal, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { CreateShareSchema } from "@/schemas";
-import { CreateShare } from "@/api/shares";
-import { CreateShareForm, IShare } from "@/interfaces";
-
+import {Dispatch, FC, SetStateAction} from "react";
+import {Button, Checkbox, Group, Modal, TextInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {zodResolver} from "mantine-form-zod-resolver";
+import {CreateShareSchema} from "@/schemas";
+import {CreateShare} from "@/api/shares";
+import {CreateShareForm, IShare} from "@/interfaces";
 
 type Props = {
     opened: boolean
@@ -30,16 +29,16 @@ export const CreateShareModal: FC<Props> = ({opened, close, setShares}) => {
 
     return (
         <Modal opened={opened} onClose={close} title="Create new share" centered>
-            <form onSubmit={createForm.onSubmit(async ({name,comment,path,readOnly}) => {
-                    await CreateShare(name,path, comment, readOnly, setShares)
-                    close()
-                    createForm.setValues({
-                        name: '',
-                        path: '',
-                        comment: '',
-                        readOnly: false,
-                    })
-                })}>
+            <form onSubmit={createForm.onSubmit(async ({name, comment, path, readOnly}) => {
+                await CreateShare(name, path, comment, readOnly, setShares)
+                close()
+                createForm.setValues({
+                    name: '',
+                    path: '',
+                    comment: '',
+                    readOnly: false,
+                })
+            })}>
                 <TextInput
                     withAsterisk
                     label="Name of share"
@@ -64,7 +63,7 @@ export const CreateShareModal: FC<Props> = ({opened, close, setShares}) => {
                     mt="md"
                     label="Read-Only Share"
                     key={createForm.key('readOnly')}
-                    {...createForm.getInputProps('readOnly', { type: 'checkbox' })}
+                    {...createForm.getInputProps('readOnly', {type: 'checkbox'})}
                 />
                 <Group mt="xl">
                     <Button color='red' onClick={close}>Cancel</Button>

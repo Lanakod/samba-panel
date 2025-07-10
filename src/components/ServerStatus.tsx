@@ -1,10 +1,10 @@
 'use client'
 
-import { FC, useEffect, useMemo, useState } from "react";
-import { Badge, Card, Divider, Group, LoadingOverlay, Stack, Text } from "@mantine/core";
-import { GetServerStatusResponse } from "@/interfaces";
-import { useWebSocket } from "@/hooks";
-import { LineChart } from '@mantine/charts';
+import {FC, useEffect, useMemo, useState} from "react";
+import {Badge, Card, Divider, Group, LoadingOverlay, Stack, Text} from "@mantine/core";
+import {GetServerStatusResponse} from "@/interfaces";
+import {useWebSocket} from "@/hooks";
+import {LineChart} from '@mantine/charts';
 
 const {Section: CardSection} = Card
 
@@ -12,7 +12,7 @@ export const ServerStatus: FC = () => {
     const [statusArr, setStatusArr] = useState<GetServerStatusResponse[]>([])
     const status = useMemo<GetServerStatusResponse>(() => {
         const len = statusArr.length
-        if(len)
+        if (len)
             return statusArr[len - 1]
         return {
             type: 'status',
@@ -35,7 +35,7 @@ export const ServerStatus: FC = () => {
         const {state: currentStatus} = status
         let color = "green"
         if (currentStatus === 'stopped') color = 'red'
-        else if(currentStatus === 'restarting') color = 'yellow'
+        else if (currentStatus === 'restarting') color = 'yellow'
         else if (currentStatus === 'fetching') color = 'blue'
         return <Badge variant="light" color={color}>{currentStatus}</Badge>
     }, [status])
@@ -47,8 +47,9 @@ export const ServerStatus: FC = () => {
 
     const memoryUsage = useMemo(() => {
         if (status.state === 'running') return <Text>
-                {status.memUsageMB} MB / {status.memLimitMB} MB <Text c="dimmed" component="span">({status.memPercent}%)</Text>
-            </Text>
+            {status.memUsageMB} MB / {status.memLimitMB} MB <Text c="dimmed"
+                                                                  component="span">({status.memPercent}%)</Text>
+        </Text>
         return null
     }, [status])
 
@@ -71,8 +72,10 @@ export const ServerStatus: FC = () => {
             controller,
         );
 
-        socket?.addEventListener('error', () => {}, controller);
-        socket?.addEventListener('close', () => {}, controller);
+        socket?.addEventListener('error', () => {
+        }, controller);
+        socket?.addEventListener('close', () => {
+        }, controller);
 
         return () => controller.abort();
     }, [socket]);
@@ -83,7 +86,8 @@ export const ServerStatus: FC = () => {
                 <Text fw={500}>Server Status</Text>
             </CardSection>
             <Stack gap="xs" pos='relative' p='xs'>
-                <LoadingOverlay visible={status.state === 'fetching'} zIndex={5} overlayProps={{ radius: "sm", blur: 2 }}/>
+                <LoadingOverlay visible={status.state === 'fetching'} zIndex={5}
+                                overlayProps={{radius: "sm", blur: 2}}/>
                 <Group justify="space-between" align="center">
                     <Text fw="600">Status:</Text>
                     {containerState}
@@ -102,15 +106,15 @@ export const ServerStatus: FC = () => {
                     data={statusArr}
                     dataKey="time"
                     withLegend
-                    legendProps={{ verticalAlign: 'bottom', height: 50 }}
+                    legendProps={{verticalAlign: 'bottom', height: 50}}
                     xAxisLabel="Time"
-                    xAxisProps={{ padding: { left: 10, right: 10 } }}
-                    yAxisProps={{ domain: [0, 100] }}
+                    xAxisProps={{padding: {left: 10, right: 10}}}
+                    yAxisProps={{domain: [0, 100]}}
                     tooltipAnimationDuration={200}
                     unit="%"
                     series={[
-                        { name: 'cpuPercent', label: 'CPU %', color: 'indigo.6' },
-                        { name: 'memPercent', label: 'RAM %', color: 'teal.6'}
+                        {name: 'cpuPercent', label: 'CPU %', color: 'indigo.6'},
+                        {name: 'memPercent', label: 'RAM %', color: 'teal.6'}
                     ]}
                     curveType="natural"
                 />
@@ -121,13 +125,13 @@ export const ServerStatus: FC = () => {
                     dataKey="time"
                     withLegend
                     xAxisLabel="Time"
-                    xAxisProps={{ padding: { left: 10, right: 10 } }}
-                    legendProps={{ verticalAlign: 'bottom', height: 50 }}
+                    xAxisProps={{padding: {left: 10, right: 10}}}
+                    legendProps={{verticalAlign: 'bottom', height: 50}}
                     tooltipAnimationDuration={200}
                     unit="MB"
                     series={[
-                        { name: 'memLimitMB', label: "RAM Limit", color: 'indigo.6'},
-                        { name: 'memUsageMB', label: 'RAM Usage', color: 'teal.6' }
+                        {name: 'memLimitMB', label: "RAM Limit", color: 'indigo.6'},
+                        {name: 'memUsageMB', label: 'RAM Usage', color: 'teal.6'}
                     ]}
                     curveType="natural"
                 />

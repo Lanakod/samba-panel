@@ -1,12 +1,11 @@
 'use client'
-import { Dispatch, FC, SetStateAction, useEffect } from "react";
-import { Button, Checkbox, Group, Modal, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { UpdateShareSchema } from "@/schemas";
-import { UpdateShare } from "@/api/shares";
-import { IShare, UpdateShareForm } from "@/interfaces";
-
+import {Dispatch, FC, SetStateAction, useEffect} from "react";
+import {Button, Checkbox, Group, Modal, TextInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {zodResolver} from "mantine-form-zod-resolver";
+import {UpdateShareSchema} from "@/schemas";
+import {UpdateShare} from "@/api/shares";
+import {IShare, UpdateShareForm} from "@/interfaces";
 
 type Props = {
     opened: boolean
@@ -31,15 +30,15 @@ export const UpdateShareModal: FC<Props> = ({opened, close, setShares, values}) 
     });
 
     useEffect(() => {
-        if(values) updateForm.setValues(values)
+        if (values) updateForm.setValues(values)
     }, [values])
 
     return (
         <Modal opened={opened} onClose={close} title="Edit share" centered>
-            <form onSubmit={updateForm.onSubmit(async ({originalName, name,comment,path,readOnly}) => {
-                    await UpdateShare(originalName, name,path, comment, readOnly, setShares)
-                    close()
-                })}>
+            <form onSubmit={updateForm.onSubmit(async ({originalName, name, comment, path, readOnly}) => {
+                await UpdateShare(originalName, name, path, comment, readOnly, setShares)
+                close()
+            })}>
                 <TextInput
                     withAsterisk
                     label="Name of share"
@@ -64,7 +63,7 @@ export const UpdateShareModal: FC<Props> = ({opened, close, setShares, values}) 
                     mt="md"
                     label="Read-Only Share"
                     key={updateForm.key('readOnly')}
-                    {...updateForm.getInputProps('readOnly', { type: 'checkbox' })}
+                    {...updateForm.getInputProps('readOnly', {type: 'checkbox'})}
                 />
                 <Group mt="xl">
                     <Button color='red' onClick={close}>Cancel</Button>

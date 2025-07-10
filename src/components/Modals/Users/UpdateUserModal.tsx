@@ -1,12 +1,11 @@
 'use client'
-import { Dispatch, FC, SetStateAction, useEffect } from "react";
-import { Button, Group, Modal, PasswordInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { UpdateUserSchema } from "@/schemas";
-import { IUser, UpdateUserForm } from "@/interfaces";
-import { UpdateUser } from "@/api";
-
+import {Dispatch, FC, SetStateAction, useEffect} from "react";
+import {Button, Group, Modal, PasswordInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {zodResolver} from "mantine-form-zod-resolver";
+import {UpdateUserSchema} from "@/schemas";
+import {IUser, UpdateUserForm} from "@/interfaces";
+import {UpdateUser} from "@/api";
 
 type Props = {
     opened: boolean
@@ -28,15 +27,15 @@ export const UpdateUserModal: FC<Props> = ({opened, close, setUsers, values}) =>
     });
 
     useEffect(() => {
-        if(values) updateForm.setValues(values)
+        if (values) updateForm.setValues(values)
     }, [values])
 
     return (
         <Modal opened={opened} onClose={close} title="Edit user" centered>
-            <form onSubmit={updateForm.onSubmit( async ({username, password}) => {
-                    await UpdateUser(username, password, setUsers)
-                    close()
-                })}>
+            <form onSubmit={updateForm.onSubmit(async ({username, password}) => {
+                await UpdateUser(username, password, setUsers)
+                close()
+            })}>
                 <PasswordInput
                     label="Password"
                     placeholder="Str0ngP@ssw0rd"

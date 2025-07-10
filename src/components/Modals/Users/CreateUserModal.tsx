@@ -1,12 +1,11 @@
 'use client'
-import { Dispatch, FC, SetStateAction } from "react";
-import { Button, Group, Modal, PasswordInput, TextInput } from "@mantine/core";
-import { useForm } from "@mantine/form";
-import { zodResolver } from "mantine-form-zod-resolver";
-import { CreateUserSchema } from "@/schemas";
-import { CreateUserForm, IUser } from "@/interfaces";
-import { CreateUser } from "@/api";
-
+import {Dispatch, FC, SetStateAction} from "react";
+import {Button, Group, Modal, PasswordInput, TextInput} from "@mantine/core";
+import {useForm} from "@mantine/form";
+import {zodResolver} from "mantine-form-zod-resolver";
+import {CreateUserSchema} from "@/schemas";
+import {CreateUserForm, IUser} from "@/interfaces";
+import {CreateUser} from "@/api";
 
 type Props = {
     opened: boolean
@@ -21,7 +20,7 @@ export const CreateUserModal: FC<Props> = ({opened, close, setUsers}) => {
         initialValues: {
             username: '',
             password: ''
-            
+
         },
 
         validate: zodResolver(CreateUserSchema)
@@ -30,9 +29,9 @@ export const CreateUserModal: FC<Props> = ({opened, close, setUsers}) => {
     return (
         <Modal opened={opened} onClose={close} title="Add user" centered>
             <form onSubmit={createForm.onSubmit(async ({username, password}) => {
-                    await CreateUser(username, password, setUsers)
-                    close()
-                })}>
+                await CreateUser(username, password, setUsers)
+                close()
+            })}>
                 <TextInput
                     withAsterisk
                     label="Username"
