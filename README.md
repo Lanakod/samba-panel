@@ -26,6 +26,9 @@
 
 👉 **Check out the [`example/`](example) folder** for a working Docker Compose setup including config files.
 
+> **Language Note**: A Russian version of this documentation is available:  
+> [README_RU.md](README_RU.md)
+
 ---
 
 ## 🚀 Quick Start (Docker Run)
