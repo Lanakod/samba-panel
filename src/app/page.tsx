@@ -1,11 +1,13 @@
-import {ContainerControls, ServerStatus} from "@/components";
+import {ContainerControls, ServerStatus, Shell} from "@/components";
 import {Stack} from "@mantine/core";
 
 export default function Home() {
     return (
-        <Stack w='full'>
-            <ServerStatus/>
-            <ContainerControls/>
-        </Stack>
+        <Shell>
+            <Stack w='full'>
+                <ServerStatus/>
+                <ContainerControls/>
+            </Stack>
+        </Shell>
     );
 }

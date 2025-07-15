@@ -1,6 +1,6 @@
 import {NextRequest, NextResponse} from 'next/server'
 import {env} from '@/env';
-import {dockerClient} from '@/utils';
+import {dockerClient, handleApiError, requireAuth} from '@/lib';
 
 
 type Params = {
@@ -13,27 +13,29 @@ type Data = {
 
 export async function POST(request: NextRequest, {params}: Data) {
     try {
+        await requireAuth()
         const {action} = await params
         const container = dockerClient.getContainer(env.CONTAINER_NAME)
         switch (action) {
             case "stop": {
                 await container.stop()
-                return NextResponse.json({success: true, message: "Stopping server"})
+                return NextResponse.json({status: true, message: "Stopping server"})
             }
             case "restart": {
                 await container.restart()
-                return NextResponse.json({success: true, message: "Restarting server"})
+                return NextResponse.json({status: true, message: "Restarting server"})
             }
             case "start": {
                 await container.start()
-                return NextResponse.json({success: true, message: "Starting server"})
+                return NextResponse.json({status: true, message: "Starting server"})
             }
         }
     } catch (e) {
+        const {status, message, error} = handleApiError(e)
         return NextResponse.json({
-            success: false,
-            message: "Error sending command to container",
-            error: e
-        }, {status: 500})
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }

@@ -1,20 +1,20 @@
 'use client';
 
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-export function useWebSocket(url: () => string) {
-    const ref = useRef<WebSocket>(null);
-    const target = useRef(url);
-    const [, update] = useState(0);
+export function useWebSocket(url: string | null) {
+    const ref = useRef<WebSocket | null>(null);
+    const [, setRefresh] = useState(0);
 
     useEffect(() => {
-        if (ref.current) return;
-        const socket = new WebSocket(target.current());
+        if (!url || ref.current) return;
+
+        const socket = new WebSocket(url);
         ref.current = socket;
-        update((p) => p + 1);
+        setRefresh(v => v + 1);
 
         return () => socket.close();
-    }, []);
+    }, [url]);
 
     return ref.current;
 }

@@ -2,21 +2,21 @@ import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 import {
     createSection,
-    getSection,
+    getSection, handleApiError,
     parseFile,
     parseSection,
     parseSmbConf,
     removeSection,
-    renameSection,
+    renameSection, requireAuth,
     saveToFile,
     updateSection
-} from "@/utils"
+} from "@/lib"
 import {env} from "@/env"
 import {CreateShareSchema, DeleteShareSchema, UpdateShareSchema} from "@/schemas"
-import {z} from "zod"
 
 export async function POST(request: NextRequest) {
     try {
+        await requireAuth()
         const body = await request.json()
         const {name, path: sharePath, readOnly, comment} = CreateShareSchema.parse(body)
 
@@ -40,16 +40,19 @@ export async function POST(request: NextRequest) {
                 error: "Section Not Found in smb.conf"
             })
         return NextResponse.json({status: true, share: parseSection(createdShare)}, {status: 201})
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return Response.json({status: false, message: "Bad Request", error: error.errors}, {status: 400});
-        }
-        return Response.json({status: false, message: "Internal Server Error", error}, {status: 500});
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }
 
 export async function PUT(request: NextRequest) {
     try {
+        await requireAuth()
         const body = await request.json()
         const {originalName, name, path: sharePath, readOnly, comment} = UpdateShareSchema.parse(body)
 
@@ -80,16 +83,19 @@ export async function PUT(request: NextRequest) {
                 error: "Section Not Found in smb.conf"
             })
         return NextResponse.json({status: true, share: parseSection(updatedShare)}, {status: 200})
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return Response.json({status: false, message: "Bad Request", error: error.errors}, {status: 400});
-        }
-        return Response.json({status: false, message: "Internal Server Error", error}, {status: 500});
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }
 
 export async function DELETE(request: NextRequest) {
     try {
+        await requireAuth()
         const body = await request.json()
         const {name} = DeleteShareSchema.parse(body)
 
@@ -98,18 +104,30 @@ export async function DELETE(request: NextRequest) {
         sections = removeSection(sections, name)
         saveToFile(sections, env.SMB_CONF_PATH)
         return NextResponse.json({status: true, message: "Share was deleted"}, {status: 200})
-    } catch (error) {
-        if (error instanceof z.ZodError) {
-            return Response.json({status: false, message: "Bad Request", error: error.errors}, {status: 400});
-        }
-        return Response.json({status: false, message: "Internal Server Error", error}, {status: 500});
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }
 
 export async function GET() {
-    const shares = parseSmbConf(env.SMB_CONF_PATH)
-    return NextResponse.json({
-        status: true,
-        shares
-    })
+    try {
+        await requireAuth()
+        const shares = parseSmbConf(env.SMB_CONF_PATH)
+        return NextResponse.json({
+            status: true,
+            shares
+        })
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
+    }
 }

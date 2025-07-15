@@ -19,6 +19,7 @@
     "@t3-oss/env-nextjs": "^0.13.8",
     "@tabler/icons-react": "^3.34.0",
     "dockerode": "^4.0.7",
+    "jose": "^6.0.11",
     "mantine-form-zod-resolver": "^1.3.0",
     "next": "15.3.4",
     "next-ws": "^2.0.9",

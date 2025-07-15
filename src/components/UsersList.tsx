@@ -62,12 +62,12 @@ export const UserList: FC = () => {
                 </ActionIconGroup>
             </Td>
         </Tr>)
-    }, [users])
+    }, [users, updateOpen])
 
     return (
         <>
-            <CreateUserModal close={createClose} open={createOpen} opened={createOpened} setUsers={setUsers}/>
-            <UpdateUserModal close={updateClose} open={updateOpen} opened={updateOpened} setUsers={setUsers}
+            <CreateUserModal closeAction={createClose} open={createOpen} opened={createOpened} setUsersAction={setUsers}/>
+            <UpdateUserModal closeAction={updateClose} open={updateOpen} opened={updateOpened} setUsersAction={setUsers}
                              values={updateValues}/>
 
             <Card withBorder shadow="sm" radius="md" pos='relative'>

@@ -1,5 +1,5 @@
 export * from './responses'
-
+export * from './AuthError'
 
 export type UpdateShareForm = {
     originalName: string

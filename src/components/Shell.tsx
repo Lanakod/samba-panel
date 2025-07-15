@@ -5,7 +5,7 @@ import {useDisclosure} from "@mantine/hooks";
 import {
     IconChevronRight,
     IconClipboardData,
-    IconFolders,
+    IconFolders, IconLogout,
     IconMoon,
     IconServer,
     IconSettings,
@@ -14,6 +14,8 @@ import {
 } from "@tabler/icons-react";
 import Link from 'next/link'
 import {notifications} from "@mantine/notifications";
+import {Logout} from "@/api";
+import {useRouter} from "next/navigation";
 
 const {Header, Navbar, Main} = AppShell
 
@@ -58,6 +60,7 @@ const links: Link[] = [
 export const Shell: FC<Props> = ({children}) => {
     const [opened, {toggle, close}] = useDisclosure();
     const {setColorScheme, colorScheme} = useMantineColorScheme()
+    const router = useRouter()
 
     const toggleColorScheme = () => {
         const nextScheme = colorScheme === 'light' ? 'dark' : 'light'
@@ -137,6 +140,18 @@ export const Shell: FC<Props> = ({children}) => {
                         leftSection={colorScheme === 'light' ? <IconMoon stroke={1.5}/> : <IconSun stroke={1.5}/>}
                     >
                         Toggle Color Scheme
+                    </Button>
+                    <Button
+                        onClick={async () => {
+                            const res = await Logout()
+                            if(res) router.push('/auth')
+                        }}
+                        variant='light'
+                        color='red'
+                        aria-label='Logout'
+                        leftSection={<IconLogout/>}
+                    >
+                        Logout
                     </Button>
                     <Center>
                         <Text size='sm' c='dimmed'>v0.2.1</Text>

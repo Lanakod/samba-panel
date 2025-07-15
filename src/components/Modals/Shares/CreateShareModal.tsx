@@ -10,11 +10,11 @@ import {CreateShareForm, IShare} from "@/interfaces";
 type Props = {
     opened: boolean
     open: () => void
-    close: () => void
-    setShares: Dispatch<SetStateAction<IShare[]>>
+    closeAction: () => void
+    setSharesAction: Dispatch<SetStateAction<IShare[]>>
 }
 
-export const CreateShareModal: FC<Props> = ({opened, close, setShares}) => {
+export const CreateShareModal: FC<Props> = ({opened, closeAction, setSharesAction}) => {
     const createForm = useForm<CreateShareForm>({
         mode: 'uncontrolled',
         initialValues: {
@@ -28,10 +28,10 @@ export const CreateShareModal: FC<Props> = ({opened, close, setShares}) => {
     });
 
     return (
-        <Modal opened={opened} onClose={close} title="Create new share" centered>
+        <Modal opened={opened} onClose={closeAction} title="Create new share" centered>
             <form onSubmit={createForm.onSubmit(async ({name, comment, path, readOnly}) => {
-                await CreateShare(name, path, comment, readOnly, setShares)
-                close()
+                await CreateShare(name, path, comment, readOnly, setSharesAction)
+                closeAction()
                 createForm.setValues({
                     name: '',
                     path: '',
@@ -66,7 +66,7 @@ export const CreateShareModal: FC<Props> = ({opened, close, setShares}) => {
                     {...createForm.getInputProps('readOnly', {type: 'checkbox'})}
                 />
                 <Group mt="xl">
-                    <Button color='red' onClick={close}>Cancel</Button>
+                    <Button color='red' onClick={closeAction}>Cancel</Button>
                     <Button type="submit" color='green'>Create</Button>
                 </Group>
             </form>

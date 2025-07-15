@@ -1,13 +1,22 @@
-import {NextRequest} from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import {env} from '@/env';
-import {getGlobalSection, parseFile, parseGlobalSection, saveToFile, updateSection} from '@/utils';
+import {
+    getGlobalSection,
+    handleApiError,
+    parseFile,
+    parseGlobalSection,
+    requireAuth,
+    saveToFile,
+    updateSection
+} from '@/lib';
 
 export async function GET() {
     try {
+        await requireAuth()
         const sections = parseFile(env.SMB_CONF_PATH);
         const global = getGlobalSection(sections);
         if (!global) {
-            return Response.json({
+            return NextResponse.json({
                 status: false,
                 message: 'Global section not found',
                 error: 'Global section not found'
@@ -15,14 +24,14 @@ export async function GET() {
         }
 
         const parsed = parseGlobalSection(global);
-        return Response.json({status: true, message: "Fetched", settings: parsed});
+        return NextResponse.json({status: true, message: "Fetched", settings: parsed});
     } catch (e) {
-        console.error(e);
-        return Response.json({
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
             status: false,
-            message: 'Failed to load global section',
-            error: 'Failed to load global section'
-        }, {status: 500});
+            message,
+            error
+        }, {status})
     }
 }
 
@@ -35,13 +44,13 @@ export async function POST(req: NextRequest) {
         const updated = updateSection(sections, 'global', newSettings);
         saveToFile(updated, env.SMB_CONF_PATH);
 
-        return Response.json({status: true, message: "Updated settings", setting: newSettings});
+        return NextResponse.json({status: true, message: "Updated settings", setting: newSettings});
     } catch (e) {
-        console.error(e);
-        return Response.json({
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
             status: false,
-            message: "Failed to update global section",
-            error: 'Failed to update global section'
-        }, {status: 500});
+            message,
+            error
+        }, {status})
     }
 }

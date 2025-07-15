@@ -1,4 +1,5 @@
 export * from './actions'
+export * from './auth'
 export * from './server-status'
 export * from './settings'
 export * from './shares'

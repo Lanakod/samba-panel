@@ -10,11 +10,11 @@ import {CreateUser} from "@/api";
 type Props = {
     opened: boolean
     open: () => void
-    close: () => void
-    setUsers: Dispatch<SetStateAction<IUser[]>>
+    closeAction: () => void
+    setUsersAction: Dispatch<SetStateAction<IUser[]>>
 }
 
-export const CreateUserModal: FC<Props> = ({opened, close, setUsers}) => {
+export const CreateUserModal: FC<Props> = ({opened, closeAction, setUsersAction}) => {
     const createForm = useForm<CreateUserForm>({
         mode: 'uncontrolled',
         initialValues: {
@@ -27,10 +27,10 @@ export const CreateUserModal: FC<Props> = ({opened, close, setUsers}) => {
     });
 
     return (
-        <Modal opened={opened} onClose={close} title="Add user" centered>
+        <Modal opened={opened} onClose={closeAction} title="Add user" centered>
             <form onSubmit={createForm.onSubmit(async ({username, password}) => {
-                await CreateUser(username, password, setUsers)
-                close()
+                await CreateUser(username, password, setUsersAction)
+                closeAction()
             })}>
                 <TextInput
                     withAsterisk
@@ -47,7 +47,7 @@ export const CreateUserModal: FC<Props> = ({opened, close, setUsers}) => {
                     {...createForm.getInputProps('password')}
                 />
                 <Group mt="xl">
-                    <Button color='red' onClick={close}>Cancel</Button>
+                    <Button color='red' onClick={closeAction}>Cancel</Button>
                     <Button type="submit" color='green'>Create</Button>
                 </Group>
             </form>

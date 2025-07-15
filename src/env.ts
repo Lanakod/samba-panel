@@ -6,6 +6,9 @@ export const env = createEnv({
         SMB_CONF_PATH: z.string(),
         SMBPASSWD_PATH: z.string(),
         CONTAINER_NAME: z.string(),
+        ADMIN_USERNAME: z.string(),
+        ADMIN_PASSWORD: z.string(),
+        JWT_SECRET: z.string(),
     },
     client: {
         NEXT_PUBLIC_PANEL_URL: z.string().url()
@@ -15,5 +18,8 @@ export const env = createEnv({
         SMBPASSWD_PATH: process.env.SMBPASSWD_PATH,
         CONTAINER_NAME: process.env.CONTAINER_NAME,
         NEXT_PUBLIC_PANEL_URL: process.env.NEXT_PUBLIC_PANEL_URL,
+        ADMIN_USERNAME: process.env.ADMIN_USERNAME,
+        ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
+        JWT_SECRET: process.env.JWT_SECRET,
     },
 });

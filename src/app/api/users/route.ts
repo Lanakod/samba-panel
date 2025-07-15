@@ -2,8 +2,9 @@ import fs from 'node:fs'
 import type {NextRequest} from 'next/server';
 import {NextResponse} from 'next/server';
 import {env} from '@/env';
-import {dockerClient, execInContainer, getSingleUser} from '@/utils';
+import {dockerClient, execInContainer, getSingleUser, handleApiError, requireAuth} from '@/lib';
 import {Writable} from 'node:stream';
+import {CreateUserSchema, DeleteUserSchema, UpdateUserSchema} from "@/schemas";
 
 // Timeout wrapper
 function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
@@ -26,13 +27,10 @@ function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
 }
 
 export async function POST(request: NextRequest) {
-    const {username, password} = await request.json();
-
-    if (!username || !password) {
-        return NextResponse.json({error: 'Username and password are required'}, {status: 400});
-    }
-
     try {
+        const body = await request.json()
+        const {username, password} = CreateUserSchema.parse(body)
+
         const container = dockerClient.getContainer(env.CONTAINER_NAME);
 
         await withTimeout(new Promise<void>(async (resolve, reject) => {
@@ -93,20 +91,21 @@ export async function POST(request: NextRequest) {
             message: 'User created successfully',
             user
         });
-    } catch (error) {
-        console.error('Error creating user:', error);
-        return NextResponse.json({status: false, error}, {status: 500});
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }
 
 export async function PUT(request: NextRequest) {
-    const {username, password} = await request.json();
-
-    if (!username || !password) {
-        return NextResponse.json({error: 'Username and password are required'}, {status: 400});
-    }
-
     try {
+        const body = await request.json()
+        const {username, password} = UpdateUserSchema.parse(body)
+
         const container = dockerClient.getContainer(env.CONTAINER_NAME);
 
         await withTimeout(new Promise<void>(async (resolve, reject) => {
@@ -160,20 +159,21 @@ export async function PUT(request: NextRequest) {
             message: 'Password updated successfully',
             user
         });
-    } catch (error) {
-        console.error('Error updating password:', error);
-        return NextResponse.json({status: false, error: error instanceof Error ? error.message : error}, {status: 500});
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }
 
 export async function DELETE(request: NextRequest) {
-    const {username} = await request.json();
-
-    if (!username) {
-        return NextResponse.json({status: false, error: 'Username is required'}, {status: 400});
-    }
-
     try {
+        const body = await request.json()
+        const {username} = DeleteUserSchema.parse(body)
+
         // Step 1: Delete user from Samba database using pdbedit
         const container = dockerClient.getContainer(env.CONTAINER_NAME);
         const {error} = await execInContainer(container, [
@@ -204,14 +204,19 @@ export async function DELETE(request: NextRequest) {
 
         return NextResponse.json({status: true, message: `User ${username} removed`});
 
-    } catch (err) {
-        console.error(err);
-        return NextResponse.json({status: false, error: 'Unexpected error while deleting user'}, {status: 500});
+    } catch (e) {
+        const {status, message, error} = handleApiError(e)
+        return NextResponse.json({
+            status: false,
+            message,
+            error
+        }, {status})
     }
 }
 
 export async function GET() {
     try {
+        await requireAuth()
         const container = dockerClient.getContainer(env.CONTAINER_NAME)
         const {output, error} = await execInContainer(container, ["pdbedit", "-L"])
         if (error) {
@@ -229,11 +234,12 @@ export async function GET() {
             users
         })
     } catch (e) {
+        const {status, message, error} = handleApiError(e)
         return NextResponse.json({
             status: false,
-            message: "Internal Server Error",
-            error: e
-        }, {status: 500})
+            message,
+            error
+        }, {status})
     }
-
 }
+

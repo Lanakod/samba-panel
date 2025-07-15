@@ -1,7 +1,8 @@
 import {env} from "@/env";
 import {ContainerStatus} from "@/interfaces";
-import {dockerClient, parseDockerStats} from "@/utils";
+import {dockerClient, parseDockerStats} from "@/lib";
 import {WebSocket} from "ws";
+import {NextResponse} from "next/server";
 
 const clients = new Set<WebSocket>();
 let intervalId: NodeJS.Timeout | null = null;
@@ -10,7 +11,7 @@ export function GET() {
     const headers = new Headers();
     headers.set("Connection", "Upgrade");
     headers.set("Upgrade", "websocket");
-    return new Response("Upgrade Required", {status: 426, headers});
+    return new NextResponse("Upgrade Required", {status: 426, headers});
 }
 
 // Helper: get current container status

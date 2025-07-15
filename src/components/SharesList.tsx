@@ -59,12 +59,12 @@ export const SharesList: FC = () => {
                 </ActionIconGroup>
             </Td>
         </Tr>)
-    }, [shares])
+    }, [shares, updateOpen])
 
     return (
         <>
-            <CreateShareModal close={createClose} open={createOpen} opened={createOpened} setShares={setShares}/>
-            <UpdateShareModal close={updateClose} open={updateOpen} opened={updateOpened} setShares={setShares}
+            <CreateShareModal closeAction={createClose} open={createOpen} opened={createOpened} setSharesAction={setShares}/>
+            <UpdateShareModal closeAction={updateClose} open={updateOpen} opened={updateOpened} setSharesAction={setShares}
                               values={updateValues}/>
 
             <Card withBorder shadow="sm" radius="md" pos='relative'>

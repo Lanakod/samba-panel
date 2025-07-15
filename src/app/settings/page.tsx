@@ -21,6 +21,7 @@ export default function SettingsPage() {
         FetchSettings(setError, setLoading).then(data => {
             if (data) form.setValues(data);
         })
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleSave = async (values: Record<string, string>) => {

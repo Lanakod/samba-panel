@@ -5,6 +5,7 @@ import {Badge, Card, Divider, Group, LoadingOverlay, Stack, Text} from "@mantine
 import {GetServerStatusResponse} from "@/interfaces";
 import {useWebSocket} from "@/hooks";
 import {LineChart} from '@mantine/charts';
+import {checkAuth} from "@/utils";
 
 const {Section: CardSection} = Card
 
@@ -28,7 +29,19 @@ export const ServerStatus: FC = () => {
         return 'http://localhost:3000'; // fallback
     }, []);
 
-    const socket = useWebSocket(() => panelUrl + '/api/server/status')
+    const [socketReady, setSocketReady] = useState(false);
+    const socket = useWebSocket(socketReady ? `${panelUrl}/api/server/status` : null)
+
+    useEffect(() => {
+        (async () => {
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                setSocketReady(true); // now initialize socket
+            } else {
+                console.warn('User not authenticated — not connecting to WebSocket.');
+            }
+        })();
+    }, []);
 
 
     const containerState = useMemo(() => {
@@ -54,30 +67,23 @@ export const ServerStatus: FC = () => {
     }, [status])
 
     useEffect(() => {
-        const controller = new AbortController();
+        if(!socket) return;
 
-        socket?.addEventListener('message', async (event) => {
-                const payload =
-                    typeof event.data === 'string' ? event.data : await event.data.text();
-                const message = JSON.parse(payload) as GetServerStatusResponse;
-                setStatusArr(s => {
-                    const newArr = [...s, message];
-                    // Keep only last 60 messages
-                    if (newArr.length > 60) {
-                        return newArr.slice(newArr.length - 60);
-                    }
-                    return newArr;
-                });
-            },
-            controller,
-        );
-
-        socket?.addEventListener('error', () => {
-        }, controller);
-        socket?.addEventListener('close', () => {
-        }, controller);
-
-        return () => controller.abort();
+        const onMessage = async (event: MessageEvent) => {
+            const payload =
+                typeof event.data === 'string' ? event.data : await event.data.text();
+            const message = JSON.parse(payload) as GetServerStatusResponse;
+            setStatusArr(s => {
+                const newArr = [...s, message];
+                // Keep only last 60 messages
+                if (newArr.length > 60) {
+                    return newArr.slice(newArr.length - 60);
+                }
+                return newArr;
+            });
+        }
+        socket.addEventListener('message', onMessage)
+        return () => socket.removeEventListener('message', onMessage);
     }, [socket]);
 
     return (

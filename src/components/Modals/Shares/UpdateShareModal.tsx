@@ -10,12 +10,12 @@ import {IShare, UpdateShareForm} from "@/interfaces";
 type Props = {
     opened: boolean
     open: () => void
-    close: () => void
-    setShares: Dispatch<SetStateAction<IShare[]>>,
+    closeAction: () => void
+    setSharesAction: Dispatch<SetStateAction<IShare[]>>,
     values: UpdateShareForm | null
 }
 
-export const UpdateShareModal: FC<Props> = ({opened, close, setShares, values}) => {
+export const UpdateShareModal: FC<Props> = ({opened, closeAction, setSharesAction, values}) => {
     const updateForm = useForm<UpdateShareForm>({
         mode: 'uncontrolled',
         initialValues: {
@@ -31,13 +31,14 @@ export const UpdateShareModal: FC<Props> = ({opened, close, setShares, values}) 
 
     useEffect(() => {
         if (values) updateForm.setValues(values)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [values])
 
     return (
-        <Modal opened={opened} onClose={close} title="Edit share" centered>
+        <Modal opened={opened} onClose={closeAction} title="Edit share" centered>
             <form onSubmit={updateForm.onSubmit(async ({originalName, name, comment, path, readOnly}) => {
-                await UpdateShare(originalName, name, path, comment, readOnly, setShares)
-                close()
+                await UpdateShare(originalName, name, path, comment, readOnly, setSharesAction)
+                closeAction()
             })}>
                 <TextInput
                     withAsterisk
@@ -66,7 +67,7 @@ export const UpdateShareModal: FC<Props> = ({opened, close, setShares, values}) 
                     {...updateForm.getInputProps('readOnly', {type: 'checkbox'})}
                 />
                 <Group mt="xl">
-                    <Button color='red' onClick={close}>Cancel</Button>
+                    <Button color='red' onClick={closeAction}>Cancel</Button>
                     <Button type="submit" color='green'>Create</Button>
                 </Group>
             </form>

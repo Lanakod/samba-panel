@@ -1,5 +1,5 @@
 import {IShare} from '@/interfaces';
-import * as fs from 'fs';
+import fs from 'fs';
 
 interface Section {
     name: string;

@@ -4,6 +4,7 @@ import {FC, useEffect, useMemo, useState} from "react";
 import {Card, Table, Text} from "@mantine/core";
 import {GetServerLogsResponse} from "@/interfaces";
 import {useWebSocket} from "@/hooks";
+import {checkAuth} from "@/utils";
 
 const {Tr, Td, Th, Thead, Tbody, ScrollContainer} = Table
 const {Section: CardSection} = Card
@@ -18,31 +19,35 @@ export const ServerLogs: FC = () => {
         return 'http://localhost:3000'; // fallback
     }, []);
 
-    const socket = useWebSocket(() => panelUrl + '/api/server/logs')
-
+    const [socketReady, setSocketReady] = useState(false);
+    const socket = useWebSocket(socketReady ? `${panelUrl}/api/server/logs` : null)
 
     useEffect(() => {
-        const controller = new AbortController();
+        (async () => {
+            const isAuth = await checkAuth();
+            if (isAuth) {
+                setSocketReady(true); // now initialize socket
+            } else {
+                console.warn('User not authenticated — not connecting to WebSocket.');
+            }
+        })();
+    }, []);
 
-        socket?.addEventListener('message', async (event) => {
-                const payload =
-                    typeof event.data === 'string' ? event.data : await event.data.text();
-                const message = JSON.parse(payload) as GetServerLogsResponse;
-                setLogs(log => [...log, message]);
-            },
-            controller,
-        );
+    useEffect(() => {
+        if(!socket) return;
 
-        socket?.addEventListener('error', () => {
-        }, controller);
-        socket?.addEventListener('close', () => {
-        }, controller);
-
-        return () => controller.abort();
+        const onMessage = async (event: MessageEvent) => {
+            const payload =
+                typeof event.data === 'string' ? event.data : await event.data.text();
+            const message = JSON.parse(payload) as GetServerLogsResponse;
+            setLogs(log => [...log, message]);
+        }
+        socket.addEventListener('message', onMessage)
+        return () => socket.removeEventListener('message', onMessage);
     }, [socket]);
 
     const rows = useMemo(() => {
-        return logs.map(log => <Tr key={log.data}>
+        return logs.map((log, i) => <Tr key={i}>
             <Td>{log.time}</Td>
             <Td>{log.data}</Td>
         </Tr>)

@@ -1,5 +1,6 @@
 import {UpdateSettingsResponse} from "@/interfaces"
 import {Dispatch, SetStateAction} from "react"
+import {notification} from "@/utils";
 
 type UpdateOk = {
     status: true,
@@ -30,9 +31,11 @@ export const UpdateSettings = async (
         const data: UpdateSettingsResponse = await res.json()
         if (data.status) {
             setIsFetching(false)
+            notification.success("Settings updated", data.message)
             return data
         } else {
             setIsFetching(false)
+            notification.error("Error", data.message)
             return {
                 status: false,
                 message: data.message
@@ -41,6 +44,7 @@ export const UpdateSettings = async (
     } catch (e) {
         console.error(e);
         setIsFetching(false);
+        notification.error("Error", "Internal Server Error")
         return {
             status: false,
             message: 'Failed to load settings'

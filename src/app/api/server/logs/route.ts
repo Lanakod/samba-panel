@@ -1,7 +1,8 @@
 import {WebSocket} from "ws";
 import {PassThrough} from "stream";
-import {dockerClient} from "@/utils";
+import {dockerClient} from "@/lib";
 import {env} from "@/env";
+import {NextResponse} from "next/server";
 
 const clients = new Set<WebSocket>();
 let logStream: PassThrough | null = null;
@@ -11,7 +12,7 @@ export function GET() {
     const headers = new Headers();
     headers.set("Connection", "Upgrade");
     headers.set("Upgrade", "websocket");
-    return new Response("Upgrade Required", {status: 426, headers});
+    return new NextResponse("Upgrade Required", {status: 426, headers});
 }
 
 // --- WebSocket handler ---

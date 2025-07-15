@@ -10,12 +10,12 @@ import {UpdateUser} from "@/api";
 type Props = {
     opened: boolean
     open: () => void
-    close: () => void
-    setUsers: Dispatch<SetStateAction<IUser[]>>,
+    closeAction: () => void
+    setUsersAction: Dispatch<SetStateAction<IUser[]>>,
     values: UpdateUserForm | null
 }
 
-export const UpdateUserModal: FC<Props> = ({opened, close, setUsers, values}) => {
+export const UpdateUserModal: FC<Props> = ({opened, closeAction, setUsersAction, values}) => {
     const updateForm = useForm<UpdateUserForm>({
         mode: 'uncontrolled',
         initialValues: {
@@ -28,13 +28,14 @@ export const UpdateUserModal: FC<Props> = ({opened, close, setUsers, values}) =>
 
     useEffect(() => {
         if (values) updateForm.setValues(values)
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [values])
 
     return (
-        <Modal opened={opened} onClose={close} title="Edit user" centered>
+        <Modal opened={opened} onClose={closeAction} title="Edit user" centered>
             <form onSubmit={updateForm.onSubmit(async ({username, password}) => {
-                await UpdateUser(username, password, setUsers)
-                close()
+                await UpdateUser(username, password, setUsersAction)
+                closeAction()
             })}>
                 <PasswordInput
                     label="Password"
@@ -43,7 +44,7 @@ export const UpdateUserModal: FC<Props> = ({opened, close, setUsers, values}) =>
                     {...updateForm.getInputProps('password')}
                 />
                 <Group mt="xl">
-                    <Button color='red' onClick={close}>Cancel</Button>
+                    <Button color='red' onClick={closeAction}>Cancel</Button>
                     <Button type="submit" color='green'>Create</Button>
                 </Group>
             </form>
