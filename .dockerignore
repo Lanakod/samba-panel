@@ -1,6 +1,4 @@
-# Ignore node_modules and build artifacts
 node_modules
-.next
 dist
 out
 

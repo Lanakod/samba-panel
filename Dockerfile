@@ -37,6 +37,7 @@ ENV NEXT_SHARP_PATH=/app/sharp
 
 COPY --from=builder /app/node_modules/sharp ./sharp
 
+COPY --from=builder /app/.next/static ./.next/static
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/public ./public
 
