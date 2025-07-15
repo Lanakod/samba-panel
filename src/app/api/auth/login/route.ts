@@ -15,13 +15,14 @@ export async function POST(req: Request) {
 
             const res = NextResponse.json({ status: true, message: "Successfull authentication" });
 
-            const isHttps = process.env.NODE_ENV === 'production' && env.IS_HTTPS === true
+            //FIX: Add secure to cookie when using https
+            //const isHttps = process.env.NODE_ENV === 'production' && env.IS_HTTPS === true
 
             res.cookies.set('token', token, {
                 httpOnly: true,
                 path: '/',
                 maxAge: 60 * 60 * 24 * 7, // 7 days
-                secure: isHttps,
+                //secure: isHttps,
                 sameSite: 'strict',
             });
 
