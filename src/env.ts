@@ -9,6 +9,7 @@ export const env = createEnv({
         ADMIN_USERNAME: z.string(),
         ADMIN_PASSWORD: z.string(),
         JWT_SECRET: z.string(),
+        IS_HTTPS: z.coerce.boolean()
     },
     client: {
         NEXT_PUBLIC_PANEL_URL: z.string().url()
@@ -21,5 +22,6 @@ export const env = createEnv({
         ADMIN_USERNAME: process.env.ADMIN_USERNAME,
         ADMIN_PASSWORD: process.env.ADMIN_PASSWORD,
         JWT_SECRET: process.env.JWT_SECRET,
+        IS_HTTPS: process.env.IS_HTTPS,
     },
 });

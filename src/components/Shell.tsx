@@ -154,7 +154,7 @@ export const Shell: FC<Props> = ({children}) => {
                         Logout
                     </Button>
                     <Center>
-                        <Text size='sm' c='dimmed'>v0.2.1</Text>
+                        <Text size='sm' c='dimmed'>v0.3.1</Text>
                     </Center>
                 </Stack>
             </Navbar>

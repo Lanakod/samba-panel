@@ -94,6 +94,7 @@ CONTAINER_NAME=samba
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=password
 JWT_SECRET=my_super_secret_jwt_key
+IS_HTTPS=false
 ```
 
 ## 📄 smb.conf
