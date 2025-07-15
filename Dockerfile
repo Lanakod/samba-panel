@@ -23,10 +23,7 @@ RUN pnpm build
 FROM node:22-alpine AS runner
 
 # Required for sharp
-RUN apk add --no-cache \
-  libc6-compat \
-  libvips \
-  && rm -rf /var/cache/apk/*
+RUN apk add --no-cache libc6-compat
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
