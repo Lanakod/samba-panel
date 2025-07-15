@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Script from 'next/script';
 import "./globals.css";
+import '@/lib/startup-warning';
 import {ColorSchemeScript, MantineColorScheme, mantineHtmlProps, MantineProvider} from '@mantine/core';
 import {cookies} from "next/headers";
 import {Notifications} from "@mantine/notifications";
