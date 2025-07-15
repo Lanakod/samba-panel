@@ -1,4 +1,6 @@
-import { NextResponse } from 'next/server';
+export const runtime = 'nodejs';
+
+import {NextResponse} from 'next/server';
 import {handleApiError, signToken} from '@/lib';
 import {env} from "@/env";
 import {AuthSchema} from "@/schemas";
@@ -11,9 +13,9 @@ export async function POST(req: Request) {
             username === env.ADMIN_USERNAME &&
             password === env.ADMIN_PASSWORD
         ) {
-            const token = await signToken({ username });
+            const token = await signToken({username});
 
-            const res = NextResponse.json({ status: true, message: "Successfull authentication" });
+            const res = NextResponse.json({status: true, message: "Successfull authentication"});
 
             //FIX: Add secure to cookie when using https
             //const isHttps = process.env.NODE_ENV === 'production' && env.IS_HTTPS === true
@@ -29,7 +31,7 @@ export async function POST(req: Request) {
             return res;
         }
 
-        return NextResponse.json({ status: false, message: 'Invalid credentials' }, { status: 401 });
+        return NextResponse.json({status: false, message: 'Invalid credentials'}, {status: 401});
     } catch (e) {
         const {status, message, error} = handleApiError(e)
         return NextResponse.json({

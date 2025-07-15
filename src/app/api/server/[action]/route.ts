@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import {NextRequest, NextResponse} from 'next/server'
 import {env} from '@/env';
 import {dockerClient, handleApiError, requireAuth} from '@/lib';

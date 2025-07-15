@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import {env} from "@/env";
 import {ContainerStatus} from "@/interfaces";
 import {dockerClient, parseDockerStats} from "@/lib";

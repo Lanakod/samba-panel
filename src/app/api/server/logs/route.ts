@@ -1,3 +1,5 @@
+export const runtime = 'nodejs';
+
 import {WebSocket} from "ws";
 import {PassThrough} from "stream";
 import {dockerClient} from "@/lib";

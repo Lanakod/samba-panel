@@ -1,13 +1,17 @@
+export const runtime = 'nodejs';
+
 import type {NextRequest} from 'next/server'
 import {NextResponse} from 'next/server'
 import {
     createSection,
-    getSection, handleApiError,
+    getSection,
+    handleApiError,
     parseFile,
     parseSection,
     parseSmbConf,
     removeSection,
-    renameSection, requireAuth,
+    renameSection,
+    requireAuth,
     saveToFile,
     updateSection
 } from "@/lib"
