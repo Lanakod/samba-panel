@@ -1,5 +1,8 @@
 {
-  "name": "samba-webui",
+  "name": "samba-panel",
+  "author": "Maxim Malakhov <malakhovma@lanakod.ru>",
+  "homepage": "https://github.com/lanakod/samba-panel",
+  "license": "MIT",
   "version": "0.3.1",
   "private": true,
   "scripts": {
@@ -9,6 +12,7 @@
     "lint": "next lint",
     "prepare": "next-ws patch"
   },
+  "packageManager": "pnpm@10.13.1",
   "dependencies": {
     "@mantine/charts": "^8.1.2",
     "@mantine/core": "^8.1.2",

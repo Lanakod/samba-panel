@@ -1,40 +1,36 @@
-# Stage 1: Install all dependencies (dev + prod)
+# Stage 1: Install dependencies
 FROM node:22-alpine AS deps
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn config set network-timeout 600000 -g \
-  && yarn install --frozen-lockfile
 
-# Stage 2: Build the app
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
+
+# Stage 2: Build the app with standalone output
 FROM node:22-alpine AS builder
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
+
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 ENV NODE_ENV=production
-RUN yarn build
 
-# Stage 3: Install only production deps
-FROM node:22-alpine AS prod-deps
-WORKDIR /app
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile --production
+# Build with standalone output
+RUN pnpm build
 
-# Stage 4: Final runtime image
+# Stage 3: Final image
 FROM node:22-alpine AS runner
+RUN adduser -S app && mkdir -p /app && chown -R app /app
+USER app
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-COPY --from=builder /app/.next .next
+COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/public ./public
-COPY --from=builder /app/next.config.ts ./next.config.ts
-COPY --from=prod-deps /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
 
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 3000
-USER node
-
 ENTRYPOINT ["/entrypoint.sh"]
