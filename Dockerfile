@@ -20,6 +20,8 @@ RUN pnpm build
 
 # Stage 3: Final image
 FROM node:22-alpine AS runner
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
 RUN adduser -S app && mkdir -p /app && chown -R app /app
 USER app
 WORKDIR /app
@@ -29,8 +31,6 @@ ENV NODE_ENV=production
 COPY --from=builder /app/.next/standalone ./
 COPY --from=builder /app/public ./public
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
 
 EXPOSE 3000
 ENTRYPOINT ["/entrypoint.sh"]
